@@ -71,4 +71,19 @@ class FileIoUtils {
         
         return getcwd();
     }
+    
+    public static function concatDirAndFileName(string $dir, string $file): string {
+
+        //trim right-most linux style path separator if any
+        $trimedPath = rtrim($dir, '/');
+
+        if( strlen($trimedPath) === strlen($dir) ) {
+
+            //there was no right-most linux path separator
+            //try to trim right-most windows style path separator if any
+            $trimedPath = rtrim($trimedPath, '\\');
+        }
+        
+        return $trimedPath . DIRECTORY_SEPARATOR . $file;
+    }
 }
