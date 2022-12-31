@@ -57,10 +57,7 @@ class FileIoUtils {
         $result = mkdir($dir, $mode, $deep);
         error_reporting($level);
 
-        if ($result !== false) {
-            
-            return;
-        }
+        if ($result) { return; }
 
         $error = error_get_last();
         
