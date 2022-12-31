@@ -1,11 +1,13 @@
 <?php
 
 return [
-    'pdo' => [
-        'sqlite::memory:', 
-        'username', 
-        'password',
-    ],
+    'pdo' => [                                                      // an array with a minimum of 1 item and a maximum of 4 items
+        'sqlite::memory:',                                          // 1st compulsory item is a dsn string to be passed as 1st arg to the PDO consructor
+        'username',                                                 // 2nd optional item is a username string to be passed as 2nd arg to the PDO consructor
+        'password',                                                 // 3rd optional item is a password string to be passed as 3rd arg to the PDO consructor
+        [],                                                         // 4th optional item is an options array to be passed as 4th arg to the PDO consructor
+    ],                                                              
+    
     'namespace' => null,                                            // Root Namespace classes will belong to. E.g. 'App\\DataSource'. Null means no namespace.
     'directory' => './model-classes',                               // absolute or relative path to where classes are to be written
     'custom_templates_directory' => null,                           // absolute or relative path to a direcory containing template files named 
