@@ -1,4 +1,5 @@
 <?php
+
 return [
     'pdo' => [
         'sqlite::memory:', 
@@ -7,6 +8,8 @@ return [
     ],
     'namespace' => null,                                            // Root Namespace classes will belong to. E.g. 'App\\DataSource'. Null means no namespace.
     'directory' => './model-classes',                               // absolute or relative path to where classes are to be written
+    'custom_templates_directory' => null,                           // absolute or relative path to a direcory containing template files named 
+                                                                    // TypesModel.php.tpl, TypesCollection.php.tpl & TypeRecord.php.tpl
     'tables_to_skip' => [],                                         // list of tables to skip generating classes for
     'collection_class_to_extend' => '\\LeanOrm\\Model\\Collection', // class that all collection classes should extend
     'model_class_to_extend' => '\\LeanOrm\\Model',                  // class that all model classes should extend
@@ -27,7 +30,10 @@ return [
 
                 foreach ($words as $word) {
 
-                    $singularizedWordsCamelCased .= $inflector->singularize($word);
+                    $singularizedWordsCamelCased .= 
+                        strlen($word) > 1
+                            ? $inflector->singularize($word)
+                            : $word;
                 }
 
             } else {
@@ -51,7 +57,10 @@ return [
 
                 foreach ($words as $word) {
 
-                    $pluralizedWordsCamelCased .= $inflector->pluralize($word);
+                    $pluralizedWordsCamelCased .= 
+                        strlen($word) > 1
+                            ? $inflector->pluralize($word)
+                            : $word;
                 }
 
             } else {
