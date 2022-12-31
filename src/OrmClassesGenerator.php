@@ -302,13 +302,13 @@ class OrmClassesGenerator {
             $this->filesToWrite[$destinationDirectory] = [];
 
             $this->filesToWrite[$destinationDirectory][$collectionClassName]
-                                = $this->generateCollectionClassFile($tableName, $collectionOrModelNamePrefix, $recordNamePrefix);
+                = $this->generateCollectionClassFile($tableName, $collectionOrModelNamePrefix, $recordNamePrefix);
 
             $this->filesToWrite[$destinationDirectory][$modelClassName]
-                                = $this->generateModelClassFile($tableName, $collectionOrModelNamePrefix, $recordNamePrefix);
+                = $this->generateModelClassFile($tableName, $collectionOrModelNamePrefix, $recordNamePrefix);
 
             $this->filesToWrite[$destinationDirectory][$recordClassName]
-                                = $this->generateRecordClassFile($tableName, $collectionOrModelNamePrefix, $recordNamePrefix);
+                = $this->generateRecordClassFile($tableName, $collectionOrModelNamePrefix, $recordNamePrefix);
 
             echo PHP_EOL;
         }
