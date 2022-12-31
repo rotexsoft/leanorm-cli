@@ -102,7 +102,7 @@ return [
 ];
 ```
 
-Below are a full list of variables / tokens that are present in the template files:
+Below is a full list of variables / tokens that are present in the template files:
 
 - **{{{COLLECTION_EXTENDED}}}** will be substituted with the fully qualified class name of the collection each new collection class will extend. Default is **\LeanOrm\Model\Collection**
 - **{{{MODEL_EXTENDED}}}** will be substituted with the fully qualified class name of the model each new model class will extend. Default is **\LeanOrm\Model**
