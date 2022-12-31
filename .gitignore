@@ -39,3 +39,4 @@ index.php
 .phpunit.result.cache
 
 /tests/DbFiles/blog.sqlite
+*.sqlite
