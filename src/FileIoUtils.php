@@ -63,11 +63,6 @@ class FileIoUtils {
         
         throw new \Exception($error['message']);
     }
-
-    public static function getCwd(): string {
-        
-        return getcwd();
-    }
     
     public static function concatDirAndFileName(string $dir, string $file): string {
 
