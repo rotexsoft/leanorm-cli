@@ -43,7 +43,9 @@ if (! is_array($input)) {
 try {
     
     $command = new \LeanOrmCli\OrmClassesGenerator($input);
-var_dump($command);
+    echo "************************************************" . PHP_EOL;
+    echo "Successfully loaded LeanOrm Cli.............."    . PHP_EOL;
+    echo "************************************************" . PHP_EOL . PHP_EOL;
     $code = $command();
     exit($code);
     
