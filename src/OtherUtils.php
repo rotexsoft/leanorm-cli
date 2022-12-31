@@ -28,4 +28,17 @@ class OtherUtils {
         
         return $message;
     }
+    
+    /**
+     * @param mixed $val value to be checked if is a string & the length is > 0
+     */
+    public static function isNonEmptyString($val): bool {
+        
+        if( function_exists('mb_strlen') ) {
+
+            return is_string($val) && \mb_strlen($val, 'UTF-8') > 0;
+        }
+
+        return is_string($val) && strlen($val) > 0;
+    }
 }
