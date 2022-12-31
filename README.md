@@ -17,4 +17,4 @@
 
 ## Installation
 
-> composer require rotexsoft/leanorm-cli-cli
+> composer require --dev rotexsoft/leanorm-cli-cli
