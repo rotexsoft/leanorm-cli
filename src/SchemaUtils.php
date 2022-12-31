@@ -79,9 +79,9 @@ class SchemaUtils {
         return static::getSchemaQueryingObject($pdo)->fetchTableCols($table_name);
     }
     
-    public static function columnExistsInDbTable(string $table_name, string $column_name): bool {
+    public static function columnExistsInDbTable(string $table_name, string $column_name, \PDO $pdo): bool {
         
-        $schema_definitions = static::fetchTableColsFromDB($table_name);
+        $schema_definitions = static::fetchTableColsFromDB($table_name, $pdo);
         
         return array_key_exists($column_name, $schema_definitions);
     }
@@ -89,6 +89,47 @@ class SchemaUtils {
     public static function getPdoDriverName(\PDO $pdo): string {
         
         return $pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
+    }
+    
+    public static function getCurrentConnectionInfo(\PDO $pdo): string {
+        
+        
+        $info = AtlasInfo::new(AtlasPdoConnection::new($pdo));
+        $result = "Currently selected database schema: `{$info->fetchCurrentSchema()}`" . PHP_EOL;
+        $attributes = [
+            'database_server_info' => 'SERVER_INFO',
+            'driver_name' => 'DRIVER_NAME',
+            'pdo_client_version' => 'CLIENT_VERSION',
+            'database_server_version' => 'SERVER_VERSION',
+            'connection_status' => 'CONNECTION_STATUS',
+            'connection_is_persistent' => 'PERSISTENT',
+        ];
+
+        foreach ($attributes as $key => $value) {
+            
+            try {
+                
+                if( $value !== 'PERSISTENT' ) {
+                    
+                    $result .= "`{$key}`: " . @$pdo->getAttribute(constant(\PDO::class .'::ATTR_' . $value));
+                }
+                
+            } catch (\Exception $e) {
+                
+                $result .= "`{$key}`: " . 'Unsupported attribute for the current PDO driver';
+                continue;
+            }
+            
+            if( $value === 'PERSISTENT' ) {
+
+                $result .= "`{$key}`: " . var_export(@$pdo->getAttribute(constant(\PDO::class .'::ATTR_' . $value)), true);
+
+            }
+            
+            $result .= PHP_EOL;
+        }
+
+        return $result;
     }
     
     protected static function getSchemaQueryingObject(\PDO $pdo): \Aura\SqlSchema\AbstractSchema {
