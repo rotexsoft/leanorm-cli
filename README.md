@@ -26,7 +26,7 @@ This is a simple command line tool for creating [LeanOrm](https://github.com/rot
 
 ## Usage
 
-> php ./vendor/bin/generate-orm-classes.php /path/to/config.php
+> php ./vendor/bin/generate-leanorm-classes.php /path/to/config.php
 
 You need to create a config file that will be passed to the command above. 
 This config file must return an array with the minimum structure below:
