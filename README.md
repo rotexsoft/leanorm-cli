@@ -49,7 +49,7 @@ Each item in the sample config file is thoroughly described & you can specify th
 
 > **Note:** running the command multiple times will not lead to previously generated classes being overwritten. If you want classes to be regenerated, you would have to manually delete them before re-running the command.
 
-The classes generate will have the directory structure below for a database with an **authors** table & a **posts** table:
+The classes generated will have the directory structure below for a database with an **authors** table & a **posts** table:
 
 ```
 /path
@@ -74,13 +74,13 @@ Most of these classes will be empty, and are provided so you can extend their be
 
 You can override the templates used by this tool and provide your own instead. This lets you customize the code generation; for example, to add your own common methods or to extend intercessory classes.
 
-The templates used by this tool are located [here](templates), you can look at them to hve an idea of how to craft your custom templates. Your custom templates can be located in any directory / folder of your choosing but they must have the same names as the default template files, i.e: 
+The templates used by this tool are located [here](templates), you can look at them to have an idea of how to craft your custom templates. Your custom templates can be located in any directory / folder of your choosing but they must have the same names as the default template files, i.e: 
 
 - TypesCollection.php.tpl
 - TypesModel.php.tpl
 - TypeRecord.php.tpl
 
-You do not have to override all the template files, you can just override the ones you want to customize, the ones you do not ovverride will keep using the default template(s). For example, you may only want to override the Model template **TypesModel.php.tpl**, which will lead to the default Collection & Record templates to continue being used, while your custom Model template would be used for creating Model classes.
+You do not have to override all the template files, you can just override the ones you want to customize, the ones you do not override will keep using the default template(s). For example, you may only want to override the Model template **TypesModel.php.tpl**, which will lead to the default Collection & Record templates to continue being used for creating Collection & Record classes, while your custom Model template would be used for creating Model classes.
 
 You will need to specify the directory containing your custom template files in the config file earlier described by adding an item with the key **custom_templates_directory** like so:
 
