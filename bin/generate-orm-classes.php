@@ -44,7 +44,7 @@ try {
     
     $command = new \LeanOrmCli\OrmClassesGenerator($input);
     echo "************************************************" . PHP_EOL;
-    echo "Successfully loaded LeanOrm Cli.............."    . PHP_EOL;
+    echo "Successfully loaded LeanOrm Cli .............."    . PHP_EOL;
     echo "************************************************" . PHP_EOL . PHP_EOL;
     $code = $command();
     exit($code);
