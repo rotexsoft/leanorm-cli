@@ -6,4 +6,8 @@ declare(strict_types=1);
 class {{{MODEL_OR_COLLECTION_CLASS_NAME_PREFIX}}}Collection extends {{{COLLECTION_EXTENDED}}} {
     
     //put your code here
+    public function getModel(): {{{MODEL_OR_COLLECTION_CLASS_NAME_PREFIX}}}Model {
+        
+        return parent::getModel();
+    }
 }

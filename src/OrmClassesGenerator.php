@@ -324,6 +324,9 @@ class OrmClassesGenerator {
             '{{{NAME_SPACE}}}'                              => ($this->config['namespace'] === null) ? '' : "namespace {$this->config['namespace']}\\{$collectionOrModelNamePrefix};",
             '{{{MODEL_OR_COLLECTION_CLASS_NAME_PREFIX}}}'   => $collectionOrModelNamePrefix,
             '{{{COLLECTION_EXTENDED}}}'                     => $this->config['collection_class_to_extend'],
+            '{{{MODEL_EXTENDED}}}'                          => $this->config['model_class_to_extend'],
+            '{{{RECORD_CLASS_NAME_PREFIX}}}'                => $recordNamePrefix,
+            '{{{TABLE_NAME}}}'                              => $tableName,
         ];
 
         return strtr($this->loadedCollectionTemplateFile, $translations);
@@ -355,7 +358,9 @@ class OrmClassesGenerator {
         $translations = [
             '{{{NAME_SPACE}}}'                              => ($this->config['namespace'] === null) ? '' : "namespace {$this->config['namespace']}\\{$collectionOrModelNamePrefix};",
             '{{{MODEL_OR_COLLECTION_CLASS_NAME_PREFIX}}}'   => $collectionOrModelNamePrefix,
+            '{{{COLLECTION_EXTENDED}}}'                     => $this->config['collection_class_to_extend'],
             '{{{MODEL_EXTENDED}}}'                          => $this->config['model_class_to_extend'],
+            '{{{RECORD_EXTENDED}}}'                         => $this->config['record_class_to_extend'],
             '{{{RECORD_CLASS_NAME_PREFIX}}}'                => $recordNamePrefix,
             '{{{CREATED_TIMESTAMP_COLUMN_NAME}}}'           => ($this->config['created_timestamp_column_name'] === null || !$createdColExists) ? 'null' : "'{$this->config['created_timestamp_column_name']}'",
             '{{{UPDATED_TIMESTAMP_COLUMN_NAME}}}'           => ($this->config['updated_timestamp_column_name'] === null || !$updatedColExists) ? 'null' : "'{$this->config['updated_timestamp_column_name']}'",
@@ -373,8 +378,12 @@ class OrmClassesGenerator {
         $translations = [
             '{{{NAME_SPACE}}}'                              => ($this->config['namespace'] === null) ? '' : "namespace {$this->config['namespace']}\\{$collectionOrModelNamePrefix};",
             '{{{RECORD_CLASS_NAME_PREFIX}}}'                => $recordNamePrefix,
+            '{{{COLLECTION_EXTENDED}}}'                     => $this->config['collection_class_to_extend'],
+            '{{{MODEL_EXTENDED}}}'                          => $this->config['model_class_to_extend'],
             '{{{RECORD_EXTENDED}}}'                         => $this->config['record_class_to_extend'],
             '{{{DB_COLS_AS_PHP_CLASS_PROPERTIES}}}'         => $phpDocDbColNamesAsPhpClassProperties,
+            '{{{MODEL_OR_COLLECTION_CLASS_NAME_PREFIX}}}'   => $collectionOrModelNamePrefix,
+            '{{{TABLE_NAME}}}'                              => $tableName,
         ];
 
         return strtr($this->loadedRecordTemplateFile, $translations);
