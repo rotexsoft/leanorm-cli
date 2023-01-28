@@ -40,13 +40,19 @@ if (! is_array($input)) {
     exit(1);
 }
 
+$tableOrViewNameIfAny='';
+
+if (isset($_SERVER['argv'][2]) && is_string($_SERVER['argv'][2]) && $_SERVER['argv'][2] !== '') {
+    $tableOrViewNameIfAny = $_SERVER['argv'][2];
+}
+
 try {
     
     $command = new \LeanOrmCli\OrmClassesGenerator($input);
     echo "************************************************" . PHP_EOL;
     echo "Successfully loaded LeanOrm Cli .............."    . PHP_EOL;
     echo "************************************************" . PHP_EOL . PHP_EOL;
-    $code = $command();
+    $code = $command($tableOrViewNameIfAny);
     exit($code);
     
 } catch (\Exception $e) {

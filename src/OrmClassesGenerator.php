@@ -59,7 +59,7 @@ class OrmClassesGenerator {
     /**
      * @var string[]
      */
-    protected array $tableNames = [];
+    protected array $tableAndViewNames = [];
 
     protected \PDO $pdo;
 
@@ -165,12 +165,16 @@ class OrmClassesGenerator {
         }
     }
 
-    public function __invoke() : ?int {
+    /**
+     * @param string $tableOrViewName name of the table or view you want to generate files for. 
+     *                                If empty string, it will generate for all tables & views.
+     */
+    public function __invoke(string $tableOrViewName='') : ?int {
 
         try {
-            return $this->loadTableNames()
+            return $this->loadTableAndViewNames()
                 ?? $this->loadTemplateFiles()
-                ?? $this->generateClassFiles()
+                ?? $this->generateClassFiles($tableOrViewName)
                 ?? $this->writeGeneratedClassFilesToDestinationDirectory();
 
         } catch (\Exception $e) {
@@ -272,11 +276,20 @@ class OrmClassesGenerator {
         return null;
     }
 
-    protected function generateClassFiles(): ?int {
+    /**
+     * @param string $tableOrViewName name of the table or view you want to generate files for. 
+     *                                If empty string, it will generate for all tables & views.
+     */
+    protected function generateClassFiles(string $tableOrViewName=''): ?int {
 
         echo "Generating class files ....". PHP_EOL;
 
-        foreach ($this->tableNames as $tableName) {
+        foreach ($this->tableAndViewNames as $tableName) {
+            
+            if($tableOrViewName !== '' && $tableName !== $tableOrViewName) {
+                
+                continue; // check the next table name (if any) on the next iteration
+            }
 
             echo "\tGenerating class files for table `{$tableName}` ....". PHP_EOL;
 
@@ -431,35 +444,42 @@ class OrmClassesGenerator {
 
     protected function writeGeneratedClassFilesToDestinationDirectory(): ?int {
 
-        echo "Creating generated collection, model & record class files ....". PHP_EOL;
+        if($this->filesToWrite !== []) {
+            
+            echo "Creating generated collection, model & record class files ....". PHP_EOL;
 
-        foreach ($this->filesToWrite as $modelDirectory => $modelFilesInfo) {
+            foreach ($this->filesToWrite as $modelDirectory => $modelFilesInfo) {
 
-            $this->mkdir($modelDirectory);
+                $this->mkdir($modelDirectory);
 
-            foreach ($modelFilesInfo as $fileName => $fileContents) {
+                foreach ($modelFilesInfo as $fileName => $fileContents) {
 
-                $destinationFile = FileIoUtils::concatDirAndFileName($modelDirectory, $fileName);
+                    $destinationFile = FileIoUtils::concatDirAndFileName($modelDirectory, $fileName);
 
-                if(FileIoUtils::isFile($destinationFile)) {
+                    if(FileIoUtils::isFile($destinationFile)) {
 
-                    echo "Skipping creation of `{$destinationFile}`, it already exists!" . PHP_EOL;
-                    continue;
+                        echo "Skipping creation of `{$destinationFile}`, it already exists!" . PHP_EOL;
+                        continue;
+                    }
+
+                    echo "Creating `{$destinationFile}`!" . PHP_EOL;
+
+                    FileIoUtils::put($destinationFile, $fileContents);
                 }
 
-                echo "Creating `{$destinationFile}`!" . PHP_EOL;
-
-                FileIoUtils::put($destinationFile, $fileContents);
+                echo PHP_EOL;
             }
 
-            echo PHP_EOL;
-        }
-
-        $fullDestination = realpath($this->destinationDirectory);
-        echo PHP_EOL . "Done creating all collection, model & record class files. " . PHP_EOL
-            . "They are all located in `{$fullDestination}`." . PHP_EOL
-            . "Goodbye!" . PHP_EOL . PHP_EOL;
-
+            $fullDestination = realpath($this->destinationDirectory);
+            echo PHP_EOL . "Done creating all collection, model & record class files. " . PHP_EOL
+                . "They are all located in `{$fullDestination}`." . PHP_EOL
+                . "Goodbye!" . PHP_EOL . PHP_EOL;
+        } else {
+            
+            echo "No collection, model or record class files were created based on the config values you specified.". PHP_EOL
+               . "Goodbye!" . PHP_EOL . PHP_EOL;
+        } // if($this->filesToWrite !== []) ...else
+        
         return null;
     }
 
@@ -487,7 +507,7 @@ class OrmClassesGenerator {
         return null;
     }
 
-    protected function loadTableNames(): ?int {
+    protected function loadTableAndViewNames(): ?int {
 
         echo 'Getting a list of database tables to generate collection, model & record classes for .....' . PHP_EOL . PHP_EOL;
         echo 'Database Info:' . PHP_EOL;
@@ -515,7 +535,7 @@ class OrmClassesGenerator {
             }
 
             echo "Adding table `{$tableName}`" . PHP_EOL;
-            $this->tableNames[] = $tableName;
+            $this->tableAndViewNames[] = $tableName;
 
         } // foreach($tableNames as $tableName)
 

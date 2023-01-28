@@ -26,7 +26,15 @@ This is a simple command line tool for creating [LeanOrm](https://github.com/rot
 
 ## Usage
 
+* Create model, record & collection classes for all tables & views using the specified config
+
 > php ./vendor/bin/generate-leanorm-classes.php /path/to/config.php
+
+* Create model, record & collection classes for a specified table (**table_or_view_name**) or view using the specified config
+    * Replace **table_or_view_name** with the name of the table or view you want to generate classes for
+
+
+> php ./vendor/bin/generate-leanorm-classes.php /path/to/config.php table_or_view_name
 
 You need to create a config file that will be passed to the command above. 
 This config file must return an array with the minimum structure below:
