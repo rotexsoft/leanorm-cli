@@ -289,7 +289,7 @@ class OrmClassesGenerator {
         foreach ($this->tableAndViewNames as $tableName) {
             
             if($tableOrViewName !== '' && $tableName !== $tableOrViewName) {
-                
+
                 continue; // check the next table name (if any) on the next iteration
             }
 
