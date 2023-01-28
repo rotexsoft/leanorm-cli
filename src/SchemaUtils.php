@@ -116,7 +116,7 @@ class SchemaUtils {
                 
             } catch (\Exception $e) {
                 
-                $result .= "`{$key}`: " . 'Unsupported attribute for the current PDO driver';
+                $result .= "`{$key}`: " . 'Unsupported attribute for the current PDO driver'.PHP_EOL;
                 continue;
             }
             

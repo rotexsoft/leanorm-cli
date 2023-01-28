@@ -52,6 +52,16 @@ try {
     echo "************************************************" . PHP_EOL;
     echo "Successfully loaded LeanOrm Cli .............."    . PHP_EOL;
     echo "************************************************" . PHP_EOL . PHP_EOL;
+    
+    if($tableOrViewNameIfAny === '') {
+        
+        echo "Classes will be generated for all tables and views (apart from tables & views specified to be skipped in the config file)." . PHP_EOL . PHP_EOL;
+        
+    } else {
+        
+        echo "Classes will be generated for only `{$tableOrViewNameIfAny}` (as long as it's not specified to be skipped in the config file)." . PHP_EOL . PHP_EOL;
+    }
+    
     $code = $command($tableOrViewNameIfAny);
     exit($code);
     

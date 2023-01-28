@@ -40,3 +40,5 @@ index.php
 
 /tests/DbFiles/blog.sqlite
 *.sqlite
+
+/tests/test-files/file-with-two-lines.txt

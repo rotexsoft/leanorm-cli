@@ -33,21 +33,6 @@ class OrmClassesGenerator {
      */
     public const TEMPLATE_RECORD_FILE_NAME = 'TypeRecord.php.tpl';
 
-    /**
-     * @var string
-     */
-    public const DEFAULT_COLLECTION_CLASS_TO_EXTEND = '\\LeanOrm\\Model\\Collection';
-
-    /**
-     * @var string
-     */
-    public const DEFAULT_MODEL_CLASS_TO_EXTEND = '\\LeanOrm\\Model';
-
-    /**
-     * @var string
-     */
-    public const DEFAULT_RECORD_CLASS_TO_EXTEND = '\\LeanOrm\\Model\\Record';
-
     protected array $defaultConfig = [];
 
     protected string $defaultTemplatesDirectory = '';
@@ -85,12 +70,14 @@ class OrmClassesGenerator {
 
             throw new \Exception('`pdo` entry is missing in config!');
 
-        } elseif (!is_array($this->config['pdo'])) {
+        } elseif (!is_array($this->config['pdo']) && !($this->config['pdo'] instanceof \PDO)) {
 
-            throw new \Exception('`pdo` entry in config is not an array!');
+            throw new \Exception('`pdo` entry in config is not an array & is also not a PDO instance!');
         }
 
-        $this->pdo = new \PDO(...$this->config['pdo']);
+        $this->pdo = ($this->config['pdo'] instanceof \PDO)
+                        ? $this->config['pdo']
+                        : new \PDO(...$this->config['pdo']);
 
         // fill config with defaults
         foreach ($this->defaultConfig as $key=>$val) {
@@ -100,68 +87,83 @@ class OrmClassesGenerator {
                 $this->config[$key] = $val;
             }
         }
+        
+        ////////////////////////////////////////////////////////////////////////
+        // VALIDATE THE REMAINING ENTRIES IN THE CONFIG
+        ////////////////////////////////////////////////////////////////////////
+        
+        if(!is_string($this->config['namespace']) && $this->config['namespace']!== null) {
+
+            throw new \Exception('`namespace` entry in config is not a string!');
+        }
 
         if(!is_string($this->config['directory'])) {
 
             throw new \Exception('`directory` entry in config is not a string!');
         }
+        
+        if(!FileIoUtils::isDir($this->config['directory'])) {
+
+            throw new \Exception('`directory` entry in config is not a valid directory!');
+        }
 
         $this->destinationDirectory  = $this->config['directory'];
 
-        if(OtherUtils::isNonEmptyString($this->config['custom_templates_directory'])) {
-
+        if(
+            OtherUtils::isNonEmptyString($this->config['custom_templates_directory'])
+        ) {
             if(!FileIoUtils::isDir($this->config['custom_templates_directory'])) {
 
                 throw new \Exception('`custom_templates_directory` entry in config is not a valid directory!');
             } 
 
             $this->customTemplatesDirectory = $this->config['custom_templates_directory'];
+            
+        } elseif (
+            !is_string($this->config['custom_templates_directory'])    
+            && $this->config['custom_templates_directory'] !== null
+        ) {
+            throw new \Exception('`custom_templates_directory` entry in config is not a string!');
         }
-
+        
         if(!is_array($this->config['tables_to_skip'])) {
 
-            $this->config['tables_to_skip'] = [];
+            throw new \Exception('`tables_to_skip` entry in config is not an array of strings (names of tables & views to skip)!');
         }
+        
+        if(!is_string($this->config['collection_class_to_extend'])) {
 
-        if(!OtherUtils::isNonEmptyString($this->config['collection_class_to_extend'])) {
-
-            $this->config['collection_class_to_extend'] = static::DEFAULT_COLLECTION_CLASS_TO_EXTEND;
+            throw new \Exception('`collection_class_to_extend` entry in config is not a string!');
         }
+        
+        if(!is_string($this->config['model_class_to_extend'])) {
 
-        if(!OtherUtils::isNonEmptyString($this->config['model_class_to_extend'])) {
-
-            $this->config['model_class_to_extend'] = static::DEFAULT_MODEL_CLASS_TO_EXTEND;
+            throw new \Exception('`model_class_to_extend` entry in config is not a string!');
         }
+        
+        if(!is_string($this->config['record_class_to_extend'])) {
 
-        if(!OtherUtils::isNonEmptyString($this->config['record_class_to_extend'])) {
-
-            $this->config['record_class_to_extend'] = static::DEFAULT_RECORD_CLASS_TO_EXTEND;
+            throw new \Exception('`record_class_to_extend` entry in config is not a string!');
         }
+        
+        if(!is_string($this->config['created_timestamp_column_name']) && $this->config['created_timestamp_column_name']!== null) {
 
-        if(
-            $this->config['created_timestamp_column_name'] !== null
-            && !OtherUtils::isNonEmptyString($this->config['created_timestamp_column_name'])
-        ) {
-            $this->config['created_timestamp_column_name'] = null;
+            throw new \Exception('`created_timestamp_column_name` entry in config is not a string!');
         }
+        
+        if(!is_string($this->config['updated_timestamp_column_name']) && $this->config['updated_timestamp_column_name']!== null) {
 
-        if(
-            $this->config['updated_timestamp_column_name'] !== null
-            && !OtherUtils::isNonEmptyString($this->config['updated_timestamp_column_name'])
-        ) {
-            $this->config['updated_timestamp_column_name'] = null;
+            throw new \Exception('`updated_timestamp_column_name` entry in config is not a string!');
         }
-
+        
         if(!is_callable($this->config['table_name_to_record_class_prefix_transformer'])) {
 
-            $this->config['table_name_to_record_class_prefix_transformer'] =
-                    $this->defaultConfig['table_name_to_record_class_prefix_transformer'];
+            throw new \Exception('`table_name_to_record_class_prefix_transformer` entry in config is not a callable!');
         }
-
+        
         if(!is_callable($this->config['table_name_to_collection_and_model_class_prefix_transformer'])) {
 
-            $this->config['table_name_to_collection_and_model_class_prefix_transformer'] =
-                    $this->defaultConfig['table_name_to_collection_and_model_class_prefix_transformer'];
+            throw new \Exception('`table_name_to_collection_and_model_class_prefix_transformer` entry in config is not a callable!');
         }
     }
 
