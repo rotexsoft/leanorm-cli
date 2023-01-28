@@ -30,7 +30,7 @@ This is a simple command line tool for creating [LeanOrm](https://github.com/rot
 
 > php ./vendor/bin/generate-leanorm-classes.php /path/to/config.php
 
-* Create model, record & collection classes for a specified table (**table_or_view_name**) or view using the specified config
+* Create model, record & collection classes for a specified table or view using the specified config
     * Replace **table_or_view_name** with the name of the table or view you want to generate classes for
 
 
