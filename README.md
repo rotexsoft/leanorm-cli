@@ -41,7 +41,7 @@ This config file must return an array with the minimum structure below:
 
 ```php
 return [
-    'pdo' => [             // An array with a minimum of 1 item and a maximum of 4 items
+    'pdo' => [             // An array with a minimum of 1 item and a maximum of 4 items or an instance of the PDO class
         'sqlite::memory:', // 1st compulsory item is a dsn string to be passed as 1st arg to the PDO consructor
         'username',        // 2nd optional item is a username string to be passed as 2nd arg to the PDO consructor
         'password',        // 3rd optional item is a password string to be passed as 3rd arg to the PDO consructor
