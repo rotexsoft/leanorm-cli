@@ -523,13 +523,14 @@ class OrmClassesGenerator {
 
                     $destinationFile = FileIoUtils::concatDirAndFileName($modelDirectory, $fileName);
 
-                    if(FileIoUtils::isFile($destinationFile) && !str_contains($destinationFile, 'FieldsMetadataTrait')) {
+                    if(FileIoUtils::isFile($destinationFile) && !str_contains($destinationFile, 'FieldsMetadata')) {
 
                         echo "Skipping creation of `{$destinationFile}`, it already exists!" . PHP_EOL;
                         continue;
                     }
 
-                    echo "Creating `{$destinationFile}`!" . PHP_EOL;
+                    echo ((FileIoUtils::isFile($destinationFile))? "Updating " : "Creating " )
+                         . "`{$destinationFile}`!" . PHP_EOL;
 
                     FileIoUtils::put($destinationFile, $fileContents);
                 }
