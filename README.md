@@ -55,7 +55,9 @@ return [
 See [sample-config.php](sample-config.php) for the full structure of the array that should be returned by the config file. 
 Each item in the sample config file is thoroughly described & you can specify the ones you want in your own config file.
 
-> **Note:** running the command multiple times will not lead to previously generated classes being overwritten. If you want classes to be regenerated, you would have to manually delete them before re-running the command.
+> **Note:** running the command multiple times will not lead to all previously generated classes being overwritten. 
+The only files that get overwritten would be the ones ending with **FieldsMetadata.php**. 
+If you want all classes to be regenerated, you would have to manually delete them before re-running the command.
 
 The classes generated will have the directory structure below for a database with an **authors** table & a **posts** table:
 
@@ -66,14 +68,16 @@ The classes generated will have the directory structure below for a database wit
             /were
                 /written
                 |_________Authors
-                |           |______AuthorsCollection.php    # Collection class for the authors table
-                |           |______AuthorsModel.php         # Model class for the authors table 
-                |           |______AuthorRecord.php         # Record class for the authors table 
+                |           |______AuthorsCollection.php     # Collection class for the authors table
+                |           |______AuthorsModel.php          # Model class for the authors table 
+                |           |______AuthorRecord.php          # Record class for the authors table 
+                |           |______AuthorsFieldsMetadata.php # Metadata array for the authors table columns, ONLY generated when the config entry **store_table_col_metadata_array_in_file** has a value of **true**
                 |
                 |_________Posts
-                            |______PostsCollection.php    # Collection class for the posts table
-                            |______PostsModel.php         # Model class for the posts table 
-                            |______PostRecord.php         # Record class for the posts table 
+                            |______PostsCollection.php     # Collection class for the posts table
+                            |______PostsModel.php          # Model class for the posts table 
+                            |______PostRecord.php          # Record class for the posts table 
+                            |______PostsFieldsMetadata.php # Metadata array for the posts table columns, ONLY generated when the config entry **store_table_col_metadata_array_in_file** has a value of **true**
 ```
 
 Most of these classes will be empty, and are provided so you can extend their behavior if you wish. They also serve to assist IDEs with autocompletion of some typehints.
