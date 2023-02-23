@@ -26,6 +26,11 @@ class OrmClassesGenerator {
     /**
      * @var string
      */
+    public const TEMPLATE_FIELDS_METADATA_FILE_NAME = 'TypesFieldsTrait.tpl';
+
+    /**
+     * @var string
+     */
     public const TEMPLATE_MODEL_FILE_NAME = 'TypesModel.php.tpl';
 
     /**
@@ -51,6 +56,8 @@ class OrmClassesGenerator {
     protected string $destinationDirectory = '';
 
     protected string $loadedCollectionTemplateFile = '';
+
+    protected string $loadedFieldsMetadataTemplateFile = '';
 
     protected string $loadedModelTemplateFile = '';
 
@@ -202,6 +209,10 @@ class OrmClassesGenerator {
                 $this->customTemplatesDirectory, 
                 static::TEMPLATE_COLLECTION_FILE_NAME
             );
+            $templateFieldsMetadataFilePath = FileIoUtils::concatDirAndFileName(
+                $this->customTemplatesDirectory, 
+                static::TEMPLATE_FIELDS_METADATA_FILE_NAME
+            );
             $templateModelFilePath = FileIoUtils::concatDirAndFileName(
                 $this->customTemplatesDirectory, 
                 static::TEMPLATE_MODEL_FILE_NAME
@@ -216,6 +227,13 @@ class OrmClassesGenerator {
                 $this->loadedCollectionTemplateFile = 
                     FileIoUtils::get($templateCollectionFilePath);
                 echo "Successfully loaded template file `{$templateCollectionFilePath}` from custom location". PHP_EOL;
+            }
+
+            if(FileIoUtils::isFile($templateFieldsMetadataFilePath)) {
+
+                $this->loadedFieldsMetadataTemplateFile = 
+                    FileIoUtils::get($templateFieldsMetadataFilePath);
+                echo "Successfully loaded template file `{$templateFieldsMetadataFilePath}` from custom location". PHP_EOL;
             }
 
             if(FileIoUtils::isFile($templateModelFilePath)) {
@@ -243,6 +261,10 @@ class OrmClassesGenerator {
             $this->defaultTemplatesDirectory, 
             static::TEMPLATE_COLLECTION_FILE_NAME
         );
+        $templateFieldsMetadataFilePath = FileIoUtils::concatDirAndFileName(
+            $this->defaultTemplatesDirectory, 
+            static::TEMPLATE_FIELDS_METADATA_FILE_NAME
+        );
         $templateModelFilePath = FileIoUtils::concatDirAndFileName(
             $this->defaultTemplatesDirectory, 
             static::TEMPLATE_MODEL_FILE_NAME
@@ -257,6 +279,13 @@ class OrmClassesGenerator {
             $this->loadedCollectionTemplateFile = 
                     FileIoUtils::get($templateCollectionFilePath);
             echo "Successfully loaded template file `{$templateCollectionFilePath}` from default location". PHP_EOL;
+        }
+
+        if($this->loadedFieldsMetadataTemplateFile === '') {
+
+            $this->loadedFieldsMetadataTemplateFile = 
+                    FileIoUtils::get($templateFieldsMetadataFilePath);
+            echo "Successfully loaded template file `{$templateFieldsMetadataFilePath}` from default location". PHP_EOL;
         }
 
         if($this->loadedModelTemplateFile === '') {
@@ -303,10 +332,12 @@ class OrmClassesGenerator {
 
             $collectionClassName = $collectionOrModelNamePrefix. 'Collection.php';
             $modelClassName = $collectionOrModelNamePrefix. 'Model.php';
+            $fieldsTraitName = $collectionOrModelNamePrefix. 'FieldsMetadataTrait.php';
             $recordClassName = $recordNamePrefix. 'Record.php';
 
             echo "\t\tCollection class file name: `{$collectionClassName}`". PHP_EOL;
             echo "\t\tModel class file name: `{$modelClassName}`". PHP_EOL;
+            echo "\t\tFields Metadata trait file name: `{$fieldsTraitName}`". PHP_EOL;
             echo "\t\tRecord class file name: `{$recordClassName}`". PHP_EOL;
 
             $destinationDirectory = 
@@ -324,6 +355,12 @@ class OrmClassesGenerator {
 
             $this->filesToWrite[$destinationDirectory][$recordClassName]
                 = $this->generateRecordClassFile($tableName, $collectionOrModelNamePrefix, $recordNamePrefix);
+            
+            if($this->config['add_table_col_metadata_to_trait']) {
+                
+                $this->filesToWrite[$destinationDirectory][$fieldsTraitName]
+                    = $this->generateFieldsTraitFile($tableName, $collectionOrModelNamePrefix, $recordNamePrefix);
+            }
 
             echo PHP_EOL;
         }
@@ -345,6 +382,33 @@ class OrmClassesGenerator {
         ];
 
         return strtr($this->loadedCollectionTemplateFile, $translations);
+    }
+
+    protected function generateFieldsTraitFile(string $tableName, string $collectionOrModelNamePrefix, string $recordNamePrefix): string {
+
+        $colDefs = SchemaUtils::fetchTableColsFromDB($tableName, $this->pdo);
+        $metadataArray = [];
+        
+        foreach($colDefs as $col) {
+            
+            $metadataArray[$col->name] = [];
+            $metadataArray[$col->name]['name'] = $col->name;
+            $metadataArray[$col->name]['type'] = $col->type;
+            $metadataArray[$col->name]['size'] = $col->size;
+            $metadataArray[$col->name]['scale'] = $col->scale;
+            $metadataArray[$col->name]['notnull'] = $col->notnull;
+            $metadataArray[$col->name]['default'] = $col->default;
+            $metadataArray[$col->name]['autoinc'] = $col->autoinc;
+            $metadataArray[$col->name]['primary'] = $col->primary;
+        }
+        
+        $translations = [
+            '{{{NAME_SPACE}}}'                              => ($this->config['namespace'] === null) ? '' : "namespace {$this->config['namespace']}\\{$collectionOrModelNamePrefix};",
+            '{{{MODEL_OR_COLLECTION_CLASS_NAME_PREFIX}}}'   => $collectionOrModelNamePrefix,
+            '{{{METADATA_ARRAY}}}'                          => var_export($metadataArray, true),
+        ];
+
+        return strtr($this->loadedFieldsMetadataTemplateFile, $translations);
     }
 
     protected function generateModelClassFile(string $tableName, string $collectionOrModelNamePrefix, string $recordNamePrefix): string {
@@ -381,8 +445,10 @@ class OrmClassesGenerator {
             '{{{UPDATED_TIMESTAMP_COLUMN_NAME}}}'           => ($this->config['updated_timestamp_column_name'] === null || !$updatedColExists) ? 'null' : "'{$this->config['updated_timestamp_column_name']}'",
             '{{{PRIMARY_COL_NAME}}}'                        => $primaryColName,
             '{{{TABLE_NAME}}}'                              => $tableName,
+            '{{{USE_TRAIT}}}'                               => ($this->config['add_table_col_metadata_to_trait']) 
+                                                                ? "use {$collectionOrModelNamePrefix}FieldsMetadataTrait;" : '',
         ];
-
+                                                                
         return strtr($this->loadedModelTemplateFile, $translations);
     }
 
@@ -458,7 +524,7 @@ class OrmClassesGenerator {
 
                     $destinationFile = FileIoUtils::concatDirAndFileName($modelDirectory, $fileName);
 
-                    if(FileIoUtils::isFile($destinationFile)) {
+                    if(FileIoUtils::isFile($destinationFile) && !str_contains($destinationFile, 'FieldsMetadataTrait')) {
 
                         echo "Skipping creation of `{$destinationFile}`, it already exists!" . PHP_EOL;
                         continue;

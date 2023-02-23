@@ -14,6 +14,8 @@ namespace App\Models\Authors;
  */
 class AuthorsModel extends \LeanOrm\CachingModel {
     
+    use AuthorsFieldsMetadataTrait;
+    
     protected ?string $collection_class_name = AuthorsCollection::class;
     
     protected ?string $record_class_name = AuthorRecord::class;

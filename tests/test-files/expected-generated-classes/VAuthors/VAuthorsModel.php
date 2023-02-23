@@ -14,6 +14,8 @@ namespace App\Models\VAuthors;
  */
 class VAuthorsModel extends \LeanOrm\CachingModel {
     
+    use VAuthorsFieldsMetadataTrait;
+    
     protected ?string $collection_class_name = VAuthorsCollection::class;
     
     protected ?string $record_class_name = VAuthorRecord::class;

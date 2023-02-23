@@ -128,3 +128,6 @@ Below is a full list of variables / tokens that are present in the template file
 
 - **{{{PRIMARY_COL_NAME}}}** will be subsituted with an empty string or the name of the primary key column in the table **{{{TABLE_NAME}}}**
 - **{{{TABLE_NAME}}}** will be subsituted with the name of the db table that we are generating collection, model & record classes for
+
+- **{{{METADATA_ARRAY}}}** will be subsituted with an array containing table col metadata in the trait used by generated models if the config entry **add_table_col_metadata_to_trait** has a value of **true**
+- **{{{USE_TRAIT}}}** will be subsituted with a use trait statement in the model classes if the config entry **add_table_col_metadata_to_trait** has a value of **true**

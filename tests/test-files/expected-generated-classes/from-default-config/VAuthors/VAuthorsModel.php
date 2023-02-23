@@ -14,6 +14,8 @@ declare(strict_types=1);
  */
 class VAuthorsModel extends \LeanOrm\Model {
     
+    
+    
     protected ?string $collection_class_name = VAuthorsCollection::class;
     
     protected ?string $record_class_name = VAuthorRecord::class;

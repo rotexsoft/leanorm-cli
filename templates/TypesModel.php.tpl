@@ -14,6 +14,8 @@ declare(strict_types=1);
  */
 class {{{MODEL_OR_COLLECTION_CLASS_NAME_PREFIX}}}Model extends {{{MODEL_EXTENDED}}} {
     
+    {{{USE_TRAIT}}}
+    
     protected ?string $collection_class_name = {{{MODEL_OR_COLLECTION_CLASS_NAME_PREFIX}}}Collection::class;
     
     protected ?string $record_class_name = {{{RECORD_CLASS_NAME_PREFIX}}}Record::class;

@@ -14,6 +14,8 @@ declare(strict_types=1);
  */
 class AuthorsModel extends \LeanOrm\Model {
     
+    
+    
     protected ?string $collection_class_name = AuthorsCollection::class;
     
     protected ?string $record_class_name = AuthorRecord::class;

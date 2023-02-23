@@ -18,6 +18,8 @@ return [
     'created_timestamp_column_name' => null,                            // Name of a column in each table whose value will be updated with the time each row gets inserted
     'updated_timestamp_column_name' => null,                            // Name of a column in each table whose value will be updated with the time each row gets updated
     
+    'add_table_col_metadata_to_trait' => false,                         // if true, a trait containing table metadata info will be generated and referenced in the model class
+    
     'table_name_to_record_class_prefix_transformer' =>                  // A callback that accepts a db table name, modifies it & returns the modified value that will be used to substitute {{{RECORD_CLASS_NAME_PREFIX}}} in template files
         function(string $tableName): string {
     

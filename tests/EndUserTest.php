@@ -111,6 +111,8 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
             'created_timestamp_column_name' => 'date_created',                  // Name of a column in each table whose value will be updated with the time each row gets inserted
             'updated_timestamp_column_name' => 'm_timestamp',                   // Name of a column in each table whose value will be updated with the time each row gets updated
 
+            'add_table_col_metadata_to_trait' => true,
+            
             'table_name_to_record_class_prefix_transformer' =>                  // A callback that accepts a db table name, modifies it & returns the modified value that will be used to substitute {{{RECORD_CLASS_NAME_PREFIX}}} in template files
                 function(string $tableName): string {
 
@@ -188,7 +190,7 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
             FileIoUtils::get($basePathExpected. 'Authors'. $ds . 'AuthorsModel.php' ),
             FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorsModel.php' )
         );
-        
+
         $this->tearDown();
         $this->setUp();
         
@@ -354,7 +356,7 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
             FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorsModel.php' )
         );
         
-        // re run for skioped table, to make sure skipping of already generated files occurs
+        // re run for skipped table, to make sure skipping of already generated files occurs
         $command3 = new \LeanOrmCli\OrmClassesGenerator($input);
         $command3('posts'); // run command to generate for 1 table
         
