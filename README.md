@@ -59,6 +59,12 @@ Each item in the sample config file is thoroughly described & you can specify th
 The only files that get overwritten would be the ones ending with **FieldsMetadata.php**. 
 If you want all classes to be regenerated, you would have to manually delete them before re-running the command.
 
+> **Note:** when you modify table or view columns in your database and you have previously generated your
+classes using a config whose **store_table_col_metadata_array_in_file** entry has a value of **true**, you SHOULD
+re-run this tool with the same config to update all the table column metadata files (i.e. those ending with **FieldsMetadata.php**)
+so that your table / view column modifications are reflected in your application. 
+This re-run will not modify your Model, Record & collection class files.
+
 The classes generated will have the directory structure below for a database with an **authors** table & a **posts** table:
 
 ```
