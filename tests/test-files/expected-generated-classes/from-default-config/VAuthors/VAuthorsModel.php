@@ -14,8 +14,6 @@ declare(strict_types=1);
  */
 class VAuthorsModel extends \LeanOrm\Model {
     
-    
-    
     protected ?string $collection_class_name = VAuthorsCollection::class;
     
     protected ?string $record_class_name = VAuthorRecord::class;
@@ -36,6 +34,8 @@ class VAuthorsModel extends \LeanOrm\Model {
         string $primary_col_name = '', 
         string $table_name = ''
     ) {
+        
+        
         parent::__construct($dsn, $username, $passwd, $pdo_driver_opts, $primary_col_name, $table_name);
         
         // Define relationships below here

@@ -14,8 +14,6 @@ namespace App\Models\VAuthors;
  */
 class VAuthorsModel extends \LeanOrm\CachingModel {
     
-    use VAuthorsFieldsMetadataTrait;
-    
     protected ?string $collection_class_name = VAuthorsCollection::class;
     
     protected ?string $record_class_name = VAuthorRecord::class;
@@ -36,6 +34,8 @@ class VAuthorsModel extends \LeanOrm\CachingModel {
         string $primary_col_name = '', 
         string $table_name = ''
     ) {
+        $this->table_cols = include(__DIR__ . DIRECTORY_SEPARATOR . 'VAuthorsFieldsMetadata.php');
+        
         parent::__construct($dsn, $username, $passwd, $pdo_driver_opts, $primary_col_name, $table_name);
         
         // Define relationships below here

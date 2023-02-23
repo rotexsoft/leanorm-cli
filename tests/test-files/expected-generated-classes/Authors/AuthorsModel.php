@@ -14,8 +14,6 @@ namespace App\Models\Authors;
  */
 class AuthorsModel extends \LeanOrm\CachingModel {
     
-    use AuthorsFieldsMetadataTrait;
-    
     protected ?string $collection_class_name = AuthorsCollection::class;
     
     protected ?string $record_class_name = AuthorRecord::class;
@@ -36,6 +34,8 @@ class AuthorsModel extends \LeanOrm\CachingModel {
         string $primary_col_name = '', 
         string $table_name = ''
     ) {
+        $this->table_cols = include(__DIR__ . DIRECTORY_SEPARATOR . 'AuthorsFieldsMetadata.php');
+        
         parent::__construct($dsn, $username, $passwd, $pdo_driver_opts, $primary_col_name, $table_name);
         
         // Define relationships below here

@@ -332,12 +332,12 @@ class OrmClassesGenerator {
 
             $collectionClassName = $collectionOrModelNamePrefix. 'Collection.php';
             $modelClassName = $collectionOrModelNamePrefix. 'Model.php';
-            $fieldsTraitName = $collectionOrModelNamePrefix. 'FieldsMetadataTrait.php';
+            $fieldsFileName = $collectionOrModelNamePrefix. 'FieldsMetadata.php';
             $recordClassName = $recordNamePrefix. 'Record.php';
 
             echo "\t\tCollection class file name: `{$collectionClassName}`". PHP_EOL;
             echo "\t\tModel class file name: `{$modelClassName}`". PHP_EOL;
-            echo "\t\tFields Metadata trait file name: `{$fieldsTraitName}`". PHP_EOL;
+            echo "\t\tFields Metadata file name: `{$fieldsFileName}`". PHP_EOL;
             echo "\t\tRecord class file name: `{$recordClassName}`". PHP_EOL;
 
             $destinationDirectory = 
@@ -356,10 +356,10 @@ class OrmClassesGenerator {
             $this->filesToWrite[$destinationDirectory][$recordClassName]
                 = $this->generateRecordClassFile($tableName, $collectionOrModelNamePrefix, $recordNamePrefix);
             
-            if($this->config['add_table_col_metadata_to_trait']) {
+            if($this->config['store_table_col_metadata_array_in_file']) {
                 
-                $this->filesToWrite[$destinationDirectory][$fieldsTraitName]
-                    = $this->generateFieldsTraitFile($tableName, $collectionOrModelNamePrefix, $recordNamePrefix);
+                $this->filesToWrite[$destinationDirectory][$fieldsFileName]
+                    = $this->generateFieldsMetadataFile($tableName, $collectionOrModelNamePrefix, $recordNamePrefix);
             }
 
             echo PHP_EOL;
@@ -384,7 +384,7 @@ class OrmClassesGenerator {
         return strtr($this->loadedCollectionTemplateFile, $translations);
     }
 
-    protected function generateFieldsTraitFile(string $tableName, string $collectionOrModelNamePrefix, string $recordNamePrefix): string {
+    protected function generateFieldsMetadataFile(string $tableName, string $collectionOrModelNamePrefix, string $recordNamePrefix): string {
 
         $colDefs = SchemaUtils::fetchTableColsFromDB($tableName, $this->pdo);
         $metadataArray = [];
@@ -403,9 +403,7 @@ class OrmClassesGenerator {
         }
         
         $translations = [
-            '{{{NAME_SPACE}}}'                              => ($this->config['namespace'] === null) ? '' : "namespace {$this->config['namespace']}\\{$collectionOrModelNamePrefix};",
-            '{{{MODEL_OR_COLLECTION_CLASS_NAME_PREFIX}}}'   => $collectionOrModelNamePrefix,
-            '{{{METADATA_ARRAY}}}'                          => var_export($metadataArray, true),
+            '{{{METADATA_ARRAY}}}' => var_export($metadataArray, true),
         ];
 
         return strtr($this->loadedFieldsMetadataTemplateFile, $translations);
@@ -445,8 +443,9 @@ class OrmClassesGenerator {
             '{{{UPDATED_TIMESTAMP_COLUMN_NAME}}}'           => ($this->config['updated_timestamp_column_name'] === null || !$updatedColExists) ? 'null' : "'{$this->config['updated_timestamp_column_name']}'",
             '{{{PRIMARY_COL_NAME}}}'                        => $primaryColName,
             '{{{TABLE_NAME}}}'                              => $tableName,
-            '{{{USE_TRAIT}}}'                               => ($this->config['add_table_col_metadata_to_trait']) 
-                                                                ? "use {$collectionOrModelNamePrefix}FieldsMetadataTrait;" : '',
+            '{{{INCLUDE_TABLE_COL_METADATA}}}'                               => ($this->config['store_table_col_metadata_array_in_file']) 
+                                                                ? "\$this->table_cols = include(__DIR__ . DIRECTORY_SEPARATOR . '{$collectionOrModelNamePrefix}FieldsMetadata.php');" 
+                                                                : '',
         ];
                                                                 
         return strtr($this->loadedModelTemplateFile, $translations);

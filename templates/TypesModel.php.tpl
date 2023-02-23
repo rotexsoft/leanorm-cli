@@ -14,8 +14,6 @@ declare(strict_types=1);
  */
 class {{{MODEL_OR_COLLECTION_CLASS_NAME_PREFIX}}}Model extends {{{MODEL_EXTENDED}}} {
     
-    {{{USE_TRAIT}}}
-    
     protected ?string $collection_class_name = {{{MODEL_OR_COLLECTION_CLASS_NAME_PREFIX}}}Collection::class;
     
     protected ?string $record_class_name = {{{RECORD_CLASS_NAME_PREFIX}}}Record::class;
@@ -36,6 +34,8 @@ class {{{MODEL_OR_COLLECTION_CLASS_NAME_PREFIX}}}Model extends {{{MODEL_EXTENDED
         string $primary_col_name = '', 
         string $table_name = ''
     ) {
+        {{{INCLUDE_TABLE_COL_METADATA}}}
+        
         parent::__construct($dsn, $username, $passwd, $pdo_driver_opts, $primary_col_name, $table_name);
         
         // Define relationships below here

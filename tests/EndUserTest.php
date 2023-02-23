@@ -111,7 +111,7 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
             'created_timestamp_column_name' => 'date_created',                  // Name of a column in each table whose value will be updated with the time each row gets inserted
             'updated_timestamp_column_name' => 'm_timestamp',                   // Name of a column in each table whose value will be updated with the time each row gets updated
 
-            'add_table_col_metadata_to_trait' => true,
+            'store_table_col_metadata_array_in_file' => true,
             
             'table_name_to_record_class_prefix_transformer' =>                  // A callback that accepts a db table name, modifies it & returns the modified value that will be used to substitute {{{RECORD_CLASS_NAME_PREFIX}}} in template files
                 function(string $tableName): string {
