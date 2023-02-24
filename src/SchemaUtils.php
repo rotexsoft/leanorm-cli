@@ -27,9 +27,9 @@ class SchemaUtils {
             // we are doing this here
             return static::dbFetchCol(
                 $pdo,   
-                "SELECT name FROM sqlite_master
+                "SELECT name FROM sqlite_master where sqlite_master.type IN ('table', 'view')
                 UNION ALL
-                SELECT name FROM sqlite_temp_master
+                SELECT name FROM sqlite_temp_master where sqlite_temp_master.type IN ('table', 'view')
                 ORDER BY name"
             );
         }
