@@ -11,60 +11,23 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
     
     protected ?\PDO $pdo = null;
     
-    // TO MAKE THIS CLASS WORK WITH OTHER PDO DRIVERS
-    // STORE QUERIES IN ARRAYS KEYED BY DRIVER NAME
-    // INJECT DSN, UNAME & PWD FOR NON-SQLITE DRIVERS
-    // VIA ENVIRONMENT VARIABLES. GET DRIVER NAME 
-    // AFTER CREATING THE PDO CONNECTION AND USE THAT 
-    // TO GET APPROPRIATE QUERIES FROM THE ARRAY
-    // RUN THE QUERIES IN SETUP. IN TEARDOWN
-    // DROP TABLES AND VIEWS FOR NON SQLITE
-    // DRIVERS.
+    use SchemaManagementTrait;
     
     public function setUp(): void {
         
         parent::setUp();
         
-        $this->pdo = new \PDO('sqlite::memory:');
+        $pdoArgs = include __DIR__ . DIRECTORY_SEPARATOR . 'pdo.php';
+        $this->pdo = new \PDO(...$pdoArgs);
         
-        $this->pdo->exec("
-            CREATE TABLE authors (
-                author_id INTEGER PRIMARY KEY,
-                name TEXT,
-                m_timestamp TEXT NOT NULL,
-                date_created TEXT NOT NULL
-            )
-        ");
-        
-        $this->pdo->exec("
-            CREATE VIEW v_authors 
-            AS 
-            SELECT
-                author_id,
-                name,
-                m_timestamp,
-                date_created
-            FROM
-                authors
-        ");
-        
-        $this->pdo->exec("
-            CREATE TABLE posts (
-              post_id INTEGER PRIMARY KEY,
-              author_id INTEGER NOT NULL,
-              datetime TEXT,
-              title TEXT,
-              body TEXT,
-              m_timestamp TEXT NOT NULL,
-              date_created TEXT NOT NULL,
-              FOREIGN KEY(author_id) REFERENCES authors(author_id)
-            )
-        ");
+        $this->doSetUp($this->pdo);
     }
     
     protected function tearDown(): void {
         
         parent::tearDown();
+        
+        $this->doTearDown($this->pdo);
         
         unset($this->pdo);
         $this->pdo = null;
@@ -178,10 +141,21 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'Authors'. $ds . 'AuthorsCollection.php' ));
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'Authors'. $ds . 'AuthorsModel.php' ));
         
-        self::assertEquals(
-            FileIoUtils::get($basePathExpected. 'Authors'. $ds . 'AuthorRecord.php' ),
-            FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorRecord.php' )
+        $this->validateGeneratedRecordClass(
+            FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorRecord.php' ),
+            "App\\Models\\Authors",
+            'AuthorsModel',
+            'AuthorRecord',
+            'ReadOnlyRecord',
+            [
+                'author_id',
+                'name',
+                'm_timestamp',
+                'date_created',
+            ],
+            true
         );
+        
         self::assertEquals(
             FileIoUtils::get($basePathExpected. 'Authors'. $ds . 'AuthorsCollection.php' ),
             FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorsCollection.php' )
@@ -204,10 +178,21 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'Authors'. $ds . 'AuthorsCollection.php' ));
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'Authors'. $ds . 'AuthorsModel.php' ));
         
-        self::assertEquals(
-            FileIoUtils::get($basePathExpected. 'Authors'. $ds . 'AuthorRecord.php' ),
-            FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorRecord.php' )
+        $this->validateGeneratedRecordClass(
+            FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorRecord.php' ),
+            "App\\Models\\Authors",
+            'AuthorsModel',
+            'AuthorRecord',
+            'ReadOnlyRecord',
+            [
+                'author_id',
+                'name',
+                'm_timestamp',
+                'date_created',
+            ],
+            true
         );
+        
         self::assertEquals(
             FileIoUtils::get($basePathExpected. 'Authors'. $ds . 'AuthorsCollection.php' ),
             FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorsCollection.php' )
@@ -225,10 +210,21 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'VAuthors'. $ds . 'VAuthorsCollection.php' ));
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'VAuthors'. $ds . 'VAuthorsModel.php' ));
         
-        self::assertEquals(
-            FileIoUtils::get($basePathExpected. 'VAuthors'. $ds . 'VAuthorRecord.php' ),
-            FileIoUtils::get($basePathActual. 'VAuthors'. $ds . 'VAuthorRecord.php' )
+        $this->validateGeneratedRecordClass(
+            FileIoUtils::get($basePathActual. 'VAuthors'. $ds . 'VAuthorRecord.php' ),
+            "App\\Models\\VAuthors",
+            'VAuthorsModel',
+            'VAuthorRecord',
+            'ReadOnlyRecord',
+            [
+                'author_id',
+                'name',
+                'm_timestamp',
+                'date_created',
+            ],
+            true
         );
+        
         self::assertEquals(
             FileIoUtils::get($basePathExpected. 'VAuthors'. $ds . 'VAuthorsCollection.php' ),
             FileIoUtils::get($basePathActual. 'VAuthors'. $ds . 'VAuthorsCollection.php' )
@@ -267,10 +263,21 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'Authors'. $ds . 'AuthorsCollection.php' ));
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'Authors'. $ds . 'AuthorsModel.php' ));
         
-        self::assertEquals(
-            FileIoUtils::get($basePathExpected. 'from-default-config' . $ds . 'Authors'. $ds . 'AuthorRecord.php' ),
-            FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorRecord.php' )
+        $this->validateGeneratedRecordClass(
+            FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorRecord.php' ),
+            "App\\Models\\Authors",
+            'AuthorsModel',
+            'AuthorRecord',
+            'Record',
+            [
+                'author_id',
+                'name',
+                'm_timestamp',
+                'date_created',
+            ],
+            false
         );
+        
         self::assertEquals(
             FileIoUtils::get($basePathExpected. 'from-default-config' . $ds . 'Authors'. $ds . 'AuthorsCollection.php' ),
             FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorsCollection.php' )
@@ -293,10 +300,21 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'Authors'. $ds . 'AuthorsCollection.php' ));
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'Authors'. $ds . 'AuthorsModel.php' ));
         
-        self::assertEquals(
-            FileIoUtils::get($basePathExpected. 'from-default-config' . $ds . 'Authors'. $ds . 'AuthorRecord.php' ),
-            FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorRecord.php' )
+        $this->validateGeneratedRecordClass(
+            FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorRecord.php' ),
+            "App\\Models\\Authors",
+            'AuthorsModel',
+            'AuthorRecord',
+            'Record',
+            [
+                'author_id',
+                'name',
+                'm_timestamp',
+                'date_created',
+            ],
+            false
         );
+        
         self::assertEquals(
             FileIoUtils::get($basePathExpected. 'from-default-config' . $ds . 'Authors'. $ds . 'AuthorsCollection.php' ),
             FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorsCollection.php' )
@@ -314,10 +332,21 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'VAuthors'. $ds . 'VAuthorsCollection.php' ));
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'VAuthors'. $ds . 'VAuthorsModel.php' ));
         
-        self::assertEquals(
-            FileIoUtils::get($basePathExpected. 'from-default-config' . $ds . 'VAuthors'. $ds . 'VAuthorRecord.php' ),
-            FileIoUtils::get($basePathActual. 'VAuthors'. $ds . 'VAuthorRecord.php' )
+        $this->validateGeneratedRecordClass(
+            FileIoUtils::get($basePathActual. 'VAuthors'. $ds . 'VAuthorRecord.php' ),
+            "App\\Models\\VAuthors",
+            'VAuthorsModel',
+            'VAuthorRecord',
+            'Record',
+            [
+                'author_id',
+                'name',
+                'm_timestamp',
+                'date_created',
+            ],
+            false
         );
+        
         self::assertEquals(
             FileIoUtils::get($basePathExpected. 'from-default-config' . $ds . 'VAuthors'. $ds . 'VAuthorsCollection.php' ),
             FileIoUtils::get($basePathActual. 'VAuthors'. $ds . 'VAuthorsCollection.php' )
@@ -343,10 +372,22 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'Authors'. $ds . 'AuthorsCollection.php' ));
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'Authors'. $ds . 'AuthorsModel.php' ));
         
-        self::assertEquals(
-            FileIoUtils::get($basePathExpected. 'from-default-config' . $ds . 'Authors'. $ds . 'AuthorRecord.php' ),
-            FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorRecord.php' )
+        $this->validateGeneratedRecordClass(
+            FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorRecord.php' ),
+            "App\\Models\\Authors",
+            'AuthorsModel',
+            'AuthorRecord',
+            'Record',
+            [
+                'author_id',
+                'name',
+                'm_timestamp',
+                'date_created',
+            ],
+            false
         );
+        
+        
         self::assertEquals(
             FileIoUtils::get($basePathExpected. 'from-default-config' . $ds . 'Authors'. $ds . 'AuthorsCollection.php' ),
             FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorsCollection.php' )
@@ -367,10 +408,21 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'Authors'. $ds . 'AuthorsCollection.php' ));
         self::assertTrue(FileIoUtils::isFile($basePathActual. 'Authors'. $ds . 'AuthorsModel.php' ));
         
-        self::assertEquals(
-            FileIoUtils::get($basePathExpected. 'from-default-config' . $ds . 'Authors'. $ds . 'AuthorRecord.php' ),
-            FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorRecord.php' )
+        $this->validateGeneratedRecordClass(
+            FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorRecord.php' ),
+            "App\\Models\\Authors",
+            'AuthorsModel',
+            'AuthorRecord',
+            'Record',
+            [
+                'author_id',
+                'name',
+                'm_timestamp',
+                'date_created',
+            ],
+            false
         );
+        
         self::assertEquals(
             FileIoUtils::get($basePathExpected. 'from-default-config' . $ds . 'Authors'. $ds . 'AuthorsCollection.php' ),
             FileIoUtils::get($basePathActual. 'Authors'. $ds . 'AuthorsCollection.php' )
@@ -383,6 +435,56 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
         // confirm that the posts table was skipped and no classes were generated for it
         self::assertFalse(FileIoUtils::isDir($basePathActual. 'Post'));
         self::assertFalse(FileIoUtils::isDir($basePathActual. 'Posts'));
+    }
+    
+    // Validate generated record class this way because 
+    // the various db engines have different column type definitions
+    protected function validateGeneratedRecordClass(
+        string $generatedClass,
+        string $namespace,
+        string $ModelClassName,
+        string $recordClassName,
+        string $extendedRecordClass='Record',
+        array $propertyNames = [],
+        bool $checkNamespaceLine = true
+    ) {
+        self::assertStringContainsString(
+            "declare(strict_types=1);", 
+            $generatedClass
+        );
+        
+        if($checkNamespaceLine) {
+            
+            self::assertStringContainsString(
+                "namespace {$namespace};", 
+                $generatedClass
+            );
+                
+        } else {
+            
+            self::assertStringNotContainsString(
+                "namespace", 
+                $generatedClass
+            );
+        }
+        
+        foreach($propertyNames as $propertyName) {
+            
+            self::assertStringContainsString(
+                ' * @property mixed $' . $propertyName, 
+                $generatedClass
+            );
+        }
+        
+        self::assertStringContainsString(
+            " * @method {$ModelClassName} getModel()", 
+            $generatedClass
+        );
+        
+        self::assertStringContainsString(
+            "class {$recordClassName} extends \\LeanOrm\\Model\\{$extendedRecordClass} {", 
+            $generatedClass
+        );
     }
     
     protected function rmdirRecursive($dir) {

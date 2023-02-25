@@ -20,50 +20,23 @@ class SchemaUtilsTest extends \PHPUnit\Framework\TestCase {
     // DROP TABLES AND VIEWS FOR NON SQLITE
     // DRIVERS.
     
+    use SchemaManagementTrait;
+    
     public function setUp(): void {
         
         parent::setUp();
         
-        $this->pdo = new \PDO('sqlite::memory:');
+        $pdoArgs = include __DIR__ . DIRECTORY_SEPARATOR . 'pdo.php';
+        $this->pdo = new \PDO(...$pdoArgs);
         
-        $this->pdo->exec("
-            CREATE TABLE authors (
-                author_id INTEGER PRIMARY KEY,
-                name TEXT,
-                m_timestamp TEXT NOT NULL,
-                date_created TEXT NOT NULL
-            )
-        ");
-        
-        $this->pdo->exec("
-            CREATE VIEW v_authors 
-            AS 
-            SELECT
-                author_id,
-                name,
-                m_timestamp,
-                date_created
-            FROM
-                authors
-        ");
-        
-        $this->pdo->exec("
-            CREATE TABLE posts (
-              post_id INTEGER PRIMARY KEY,
-              author_id INTEGER NOT NULL,
-              datetime TEXT,
-              title TEXT,
-              body TEXT,
-              m_timestamp TEXT NOT NULL,
-              date_created TEXT NOT NULL,
-              FOREIGN KEY(author_id) REFERENCES authors(author_id)
-            )
-        ");
+        $this->doSetUp($this->pdo);
     }
     
     protected function tearDown(): void {
         
         parent::tearDown();
+        
+        $this->doTearDown($this->pdo);
         
         unset($this->pdo);
         
