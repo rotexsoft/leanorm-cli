@@ -26,7 +26,8 @@
         "phpunit/phpunit": "^9.0",
         "php-coveralls/php-coveralls": "^2.0",
         "vimeo/psalm": "^5.4.0",
-        "rector/rector": "^0.15.0"
+        "rector/rector": "^0.15.0",
+        "opis/database": "^4.2"
     },
     "autoload": {
         "classmap": ["src/"]
@@ -42,7 +43,8 @@
         "rector-clear": "vendor/bin/rector --clear-cache",
         "rector": "vendor/bin/rector process src --dry-run -vvv",
         "psalm": "vendor/bin/psalm --threads=1",
-        "qa": "composer test && composer rector-clear && composer rector && composer psalm"
+        "qa": "composer test && composer rector-clear && composer rector && composer psalm",
+        "gen-test-pdo-config": "@php -r \"file_exists('./tests/pdo.php') || copy('./pdo-dist.php', './tests/pdo.php');\""
     },
     "bin": [
         "bin/generate-leanorm-classes.php"
