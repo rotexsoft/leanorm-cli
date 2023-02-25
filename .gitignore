@@ -38,7 +38,8 @@ index.php
 
 .phpunit.result.cache
 
-/tests/DbFiles/blog.sqlite
+/tests/sqlite/blog.sqlite
 *.sqlite
 
 /tests/test-files/file-with-two-lines.txt
+/tests/pdo.php
