@@ -141,3 +141,29 @@ Below is a full list of variables / tokens that are present in the template file
 
 - **{{{METADATA_ARRAY}}}** will be subsituted with an array containing table col metadata which will be included in model constructors if the config entry **store_table_col_metadata_array_in_file** has a value of **true**
 - **{{{INCLUDE_TABLE_COL_METADATA}}}** will be subsituted with an include statement (including the metadata array) in the model classes' constructors if the config entry **store_table_col_metadata_array_in_file** has a value of **true**
+
+## Contributing
+
+### Running Tests
+
+To run the tests in this package, just run the command below:
+
+> composer test
+
+By default, the tests run against an in-memory sqlite database using PDO.
+
+To change the tests to run against another database engine such as mysql, run the command below:
+
+> composer gen-test-pdo-config
+
+Then go and edit **./tests/pdo.php** with the PDO arguments for the database you want to connect to.
+
+Note that you only need to point to a database that has been created. 
+You don't have to create the tables and views needed for testing, 
+they will automatically be created when the test suite is run.
+In fact make sure there are no views or tables in the configured database.
+Also make sure the username you specified (for non-sqlite DBs) has permission 
+to create and drop tables and view.
+
+Because of the way the test-suite is designed, in-memory sqlite does not work.
+The sqlite db must be stored in a file. This is already setup in the default pdo config.
