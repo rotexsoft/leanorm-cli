@@ -167,3 +167,5 @@ to create and drop tables and view.
 
 Because of the way the test-suite is designed, in-memory sqlite does not work.
 The sqlite db must be stored in a file. This is already setup in the default pdo config.
+
+The package should work with MS Sqlserver, but the tests will only run with sqlite, mysql & postgres databases.

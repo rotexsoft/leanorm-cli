@@ -1,89 +1,115 @@
 <?php
-use Opis\Database\Database;
-use \Opis\Database\Connection;
-use \Opis\Database\Schema\CreateTable;
 
 trait SchemaManagementTrait {
 
     public function doSetUp(\PDO $pdo): void {
         
-        // Now using opis/database to create tables so that it generates the 
-        // appropriate SQL create statements for the current pdo driver.
-        // This makes the tests run with sqlite, mysql & postgres. 
-        // Haven't tried sqlserver yet.
-        $connection = Connection::fromPDO($pdo);
-        $db = new Database($connection);
-        $schema = $db->schema();
+        $driver_name = strtolower(\LeanOrmCli\SchemaUtils::getPdoDriverName($pdo));
         
-        $schema->create('authors', function(CreateTable $table) {
-            
-            //add table authors
-            $table->integer('author_id')->autoincrement();
-            $table->primary('author_id', 'author_id');
-            
-            $table->text('name');
-            
-            $table->text('m_timestamp')->notNull();
-            $table->text('date_created')->notNull();
-        });
+        $create_queries = [
+            'sqlite' => [
+                "
+                    CREATE TABLE authors (
+                        author_id INTEGER PRIMARY KEY,
+                        name TEXT,
+                        m_timestamp TEXT NOT NULL,
+                        date_created TEXT NOT NULL
+                    )
+                ",
+                "            
+                    CREATE VIEW v_authors 
+                    AS 
+                    SELECT
+                        author_id,
+                        name,
+                        m_timestamp,
+                        date_created
+                    FROM
+                        authors
+                ",
+                "            
+                    CREATE TABLE posts (
+                      post_id INTEGER PRIMARY KEY,
+                      author_id INTEGER NOT NULL,
+                      datetime TEXT,
+                      title TEXT,
+                      body TEXT,
+                      m_timestamp TEXT NOT NULL,
+                      date_created TEXT NOT NULL,
+                      FOREIGN KEY(author_id) REFERENCES authors(author_id)
+                    )
+                ",
+            ],
+            'mysql' => [
+                "
+                    CREATE TABLE `authors` (
+                      `author_id` int unsigned NOT NULL AUTO_INCREMENT,
+                      `name` varchar(255) DEFAULT NULL,
+                      `m_timestamp` datetime NOT NULL,
+                      `date_created` datetime NOT NULL,
+                      PRIMARY KEY (`author_id`)
+                    )
+                ",
+                "            
+                    CREATE VIEW `v_authors` AS 
+                    SELECT
+                      `authors`.`author_id`    AS `author_id`,
+                      `authors`.`name`         AS `name`,
+                      `authors`.`m_timestamp`  AS `m_timestamp`,
+                      `authors`.`date_created` AS `date_created`
+                    FROM `authors`
+                ",
+                "            
+                    CREATE TABLE `posts` (
+                      `post_id` int unsigned NOT NULL AUTO_INCREMENT,
+                      `author_id` int unsigned NOT NULL,
+                      `datetime` datetime DEFAULT NULL,
+                      `title` varchar(255) DEFAULT NULL,
+                      `body` text,
+                      `m_timestamp` datetime NOT NULL,
+                      `date_created` datetime NOT NULL,
+                      PRIMARY KEY (`post_id`),
+                      KEY `fk_posts_belong_to_an_author` (`author_id`),
+                      CONSTRAINT `fk_posts_belong_to_an_author` FOREIGN KEY (`author_id`) REFERENCES `authors` (`author_id`) ON DELETE CASCADE ON UPDATE CASCADE
+                    )
+                ",
+            ],
+            'pgsql' => [
+                "
+                    CREATE TABLE authors (
+                      author_id SERIAL PRIMARY KEY,
+                      name varchar(255) DEFAULT NULL,
+                      m_timestamp TIMESTAMP NOT NULL,
+                      date_created TIMESTAMP NOT NULL
+                    )
+                ",
+                "            
+                    CREATE VIEW v_authors AS 
+                    SELECT
+                      authors.author_id    AS author_id,
+                      authors.name         AS name,
+                      authors.m_timestamp  AS m_timestamp,
+                      authors.date_created AS date_created
+                    FROM authors
+                ",
+                "            
+                    CREATE TABLE posts (
+                      post_id SERIAL PRIMARY KEY,
+                      author_id int NOT NULL,
+                      datetime TIMESTAMP DEFAULT NULL,
+                      title varchar(255) DEFAULT NULL,
+                      body text,
+                      m_timestamp TIMESTAMP NOT NULL,
+                      date_created TIMESTAMP NOT NULL
+                    )
+                ",  
+            ],
+        ];
         
-        // Table creation method below is sqlite specific, 
-        // won't work with mysql & the others
-//        $this->pdo->exec("
-//            CREATE TABLE authors (
-//                author_id INTEGER PRIMARY KEY,
-//                name TEXT,
-//                m_timestamp TEXT NOT NULL,
-//                date_created TEXT NOT NULL
-//            )
-//        ");
-        
-        // The veiw creation sql below works on sqlite, mysql & postgres
-        // haven't tested with sqlserver though
-        $this->pdo->exec("
-            CREATE VIEW v_authors 
-            AS 
-            SELECT
-                author_id,
-                name,
-                m_timestamp,
-                date_created
-            FROM authors
-        ");
-        
-        // Table creation method below is sqlite specific, 
-        // won't work with mysql & the others
-//        $this->pdo->exec("
-//            CREATE TABLE posts (
-//              post_id INTEGER PRIMARY KEY,
-//              author_id INTEGER NOT NULL,
-//              datetime TEXT,
-//              title TEXT,
-//              body TEXT,
-//              m_timestamp TEXT NOT NULL,
-//              date_created TEXT NOT NULL,
-//              FOREIGN KEY(author_id) REFERENCES authors(author_id)
-//            )
-//        ");
-        
-        $schema->create('posts', function(CreateTable $table) {
+        foreach ($create_queries[$driver_name] as $query) {
             
-            //add table authors
-            $table->integer('post_id')->autoincrement();
-            $table->primary('post_id', 'post_id');
-            
-            $table->integer('author_id')->notNull();
-            
-            $table->text('datetime');
-            $table->text('title');
-            $table->text('body');
-            
-            $table->text('m_timestamp')->notNull();
-            $table->text('date_created')->notNull();
-            
-            $table->foreign('author_id')
-                  ->references('authors', 'author_id');
-        });
+            $pdo->exec($query);
+        }
     }
     
     protected function doTearDown(\PDO $pdo): void {
