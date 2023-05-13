@@ -7,6 +7,7 @@ declare(strict_types=1);
  * @method AuthorsCollection createNewCollection(\GDAO\Model\RecordInterface ...$list_of_records)
  * @method AuthorRecord createNewRecord(array $col_names_n_vals = [])
  * @method ?AuthorRecord fetchOneRecord(?object $select_obj=null, array $relations_to_include=[])
+ * @method ?AuthorRecord fetchOneByPkey($id, $relations_to_include = [])
  * @method AuthorRecord[] fetchRecordsIntoArray(?object $select_obj=null, array $relations_to_include=[])
  * @method AuthorRecord[] fetchRecordsIntoArrayKeyedOnPkVal(?\Aura\SqlQuery\Common\Select $select_obj=null, array $relations_to_include=[])
  * @method AuthorsCollection fetchRecordsIntoCollection(?object $select_obj=null, array $relations_to_include=[])

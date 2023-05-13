@@ -7,6 +7,7 @@ namespace App\Models\VAuthors;
  * @method VAuthorsCollection createNewCollection(\GDAO\Model\RecordInterface ...$list_of_records)
  * @method VAuthorRecord createNewRecord(array $col_names_n_vals = [])
  * @method ?VAuthorRecord fetchOneRecord(?object $select_obj=null, array $relations_to_include=[])
+ * @method ?VAuthorRecord fetchOneByPkey($id, $relations_to_include = [])
  * @method VAuthorRecord[] fetchRecordsIntoArray(?object $select_obj=null, array $relations_to_include=[])
  * @method VAuthorRecord[] fetchRecordsIntoArrayKeyedOnPkVal(?\Aura\SqlQuery\Common\Select $select_obj=null, array $relations_to_include=[])
  * @method VAuthorsCollection fetchRecordsIntoCollection(?object $select_obj=null, array $relations_to_include=[])
