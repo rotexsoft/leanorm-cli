@@ -8,7 +8,6 @@
 # clear rector cache
 ./vendor/bin/rector --clear-cache
 
-
 # run rector on *.php files in src but not any of its sub-directories
 reset && ./vendor/bin/rector --clear-cache  && ./vendor/bin/rector process src/*.php --dry-run
 
