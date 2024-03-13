@@ -34,7 +34,7 @@ class OtherUtilsTest extends \PHPUnit\Framework\TestCase {
         
     public function testThatGetThrowableAsStrWorksAsExpected() {
         
-        $throwableAssertingLooper = function (\Throwable $e, string $eol=PHP_EOL, $output): void {
+        $throwableAssertingLooper = function (\Throwable $e, string $eol, $output): void {
             
             $previous_throwable = $e; 
             $eol = PHP_EOL;
