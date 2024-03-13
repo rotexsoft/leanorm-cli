@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace LeanOrmCli;
 
-use Aura\SqlSchema\ColumnFactory;
+use Rotexsoft\SqlSchema\ColumnFactory;
 use Atlas\Info\Info as AtlasInfo;
 use Atlas\Pdo\Connection as AtlasPdoConnection;
 
@@ -48,33 +48,11 @@ class SchemaUtils {
     }
     
     /**
-     * @return  mixed[]|\Aura\SqlSchema\Column[]
+     * @return  mixed[]|\Rotexsoft\SqlSchema\Column[]
      */
     public static function fetchTableColsFromDB(string $table_name, \PDO $pdo): array {
-                
-        if(strtolower(static::getPdoDriverName($pdo)) ===  'pgsql') {
-            
-            // Use Atlas Info to get this data for Postgresql because 
-            // Aura Sql Schema keeps blowing up when fetchTableCols
-            // is called on \Aura\SqlSchema\PgsqlSchema
-            $info = AtlasInfo::new(AtlasPdoConnection::new($pdo));
-            
-            $columnsInfo = $info->fetchColumns($table_name);
-
-            foreach ($columnsInfo as $key=>$columnInfo) {
-
-                // Convert each row to objects because 
-                // static::getSchemaQueryingObject()->fetchTableCols(..)
-                // returns an array of Aura\SqlSchema\Column objects.
-                // Converting each row to an object will allow for each
-                // row's data to be accessible via object property syntax
-                $columnsInfo[$key] = (object)$columnInfo;
-            }
-             
-            return $columnsInfo;
-        }
         
-        // This works so far for mysql & sqlite.  
+        // This works so far for mariadb, mysql, postgres & sqlite.  
         // Will need to test what works for MS Sql Server
         return static::getSchemaQueryingObject($pdo)->fetchTableCols($table_name);
     }
@@ -114,7 +92,7 @@ class SchemaUtils {
                     $result .= "`{$key}`: " . @$pdo->getAttribute(constant(\PDO::class .'::ATTR_' . $value));
                 }
                 
-            } catch (\Exception $e) {
+            } catch (\Exception) {
                 
                 $result .= "`{$key}`: " . 'Unsupported attribute for the current PDO driver'.PHP_EOL;
                 continue;
@@ -132,13 +110,13 @@ class SchemaUtils {
         return $result;
     }
     
-    protected static function getSchemaQueryingObject(\PDO $pdo): \Aura\SqlSchema\AbstractSchema {
+    protected static function getSchemaQueryingObject(\PDO $pdo): \Rotexsoft\SqlSchema\AbstractSchema {
         
         // a column definition factory 
         $columnFactory = new ColumnFactory();
         $pdoDriverName = static::getPdoDriverName($pdo);
 
-        $schemaClassName = '\\Aura\\SqlSchema\\' . ucfirst($pdoDriverName) . 'Schema';
+        $schemaClassName = '\\Rotexsoft\\SqlSchema\\' . ucfirst($pdoDriverName) . 'Schema';
 
         // the schema discovery object
         return new $schemaClassName($pdo, $columnFactory);

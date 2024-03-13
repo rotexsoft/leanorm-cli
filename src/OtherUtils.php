@@ -17,7 +17,7 @@ class OtherUtils {
 
         do {
             $message .= "Exception / Error Code: {$previous_throwable->getCode()}"
-                . $eol . "Exception / Error Class: " . \get_class($previous_throwable)
+                . $eol . "Exception / Error Class: " . $previous_throwable::class
                 . $eol . "File: {$previous_throwable->getFile()}"
                 . $eol . "Line: {$previous_throwable->getLine()}"
                 . $eol . "Message: {$previous_throwable->getMessage()}" . $eol
@@ -32,7 +32,7 @@ class OtherUtils {
     /**
      * @param mixed $val value to be checked if is a string & the length is > 0
      */
-    public static function isNonEmptyString($val): bool {
+    public static function isNonEmptyString(mixed $val): bool {
         
         if( function_exists('mb_strlen') ) {
 

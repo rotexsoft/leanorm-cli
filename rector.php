@@ -23,8 +23,8 @@ return static function (RectorConfig $rectorConfigurator): void {
     $rectorConfigurator->import(SetList::PHP_72);
     $rectorConfigurator->import(SetList::PHP_73);
     $rectorConfigurator->import(SetList::PHP_74);
-    //$containerConfigurator->import(SetList::PHP_80);
-    //$containerConfigurator->import(SetList::PHP_81);
+    $rectorConfigurator->import(SetList::PHP_80);
+    $rectorConfigurator->import(SetList::PHP_81);
     $rectorConfigurator->import(SetList::CODE_QUALITY);
     $rectorConfigurator->import(SetList::CODING_STYLE);
     $rectorConfigurator->import(SetList::DEAD_CODE);
@@ -36,11 +36,6 @@ return static function (RectorConfig $rectorConfigurator): void {
         \Rector\CodingStyle\Rector\Catch_\CatchExceptionNameMatchingTypeRector::class,
         \Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector::class,
     ];
-    
-    if(PHP_MAJOR_VERSION < 8) {
-        
-        $skipables[] = \Rector\DeadCode\Rector\ClassMethod\RemoveUnusedPromotedPropertyRector::class;
-    }
     
     $rectorConfigurator->skip($skipables);
 };

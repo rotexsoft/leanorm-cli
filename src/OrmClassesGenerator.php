@@ -44,8 +44,6 @@ class OrmClassesGenerator {
 
     protected ?string $customTemplatesDirectory = null;
 
-    protected array $config = [];
-
     /**
      * @var string[]
      */
@@ -65,13 +63,12 @@ class OrmClassesGenerator {
 
     protected array $filesToWrite = [];
 
-    public function __construct(array $config) {
+    public function __construct(protected array $config) {
 
         $ds = DIRECTORY_SEPARATOR;
         $this->defaultTemplatesDirectory = realpath(__DIR__ . "{$ds}..{$ds}templates{$ds}");
 
         $this->defaultConfig = require __DIR__ . "{$ds}..{$ds}sample-config.php";
-        $this->config = $config;
 
         if(!array_key_exists('pdo', $this->config)) {
 
@@ -479,10 +476,10 @@ class OrmClassesGenerator {
             $coltype = $col->type;
 
             $unsigned = '';
-            if (substr(strtoupper($coltype), -9) == ' UNSIGNED') {
+            if (str_ends_with(strtoupper((string) $coltype), ' UNSIGNED')) {
 
-                $unsigned = substr($coltype, -9);
-                $coltype = substr($coltype, 0, -9);
+                $unsigned = substr((string) $coltype, -9);
+                $coltype = substr((string) $coltype, 0, -9);
             }
 
             $props .= " * @property mixed \${$col->name} {$coltype}";
@@ -592,8 +589,8 @@ class OrmClassesGenerator {
                     strtolower(SchemaUtils::getPdoDriverName($this->pdo)) === 'sqlite'
                     && 
                     ( 
-                        in_array(strtolower($tableName), static::LIST_OF_SQLITE_TABLES_TO_SKIP)
-                        || str_contains(strtolower($tableName), 'sqlite')
+                        in_array(strtolower((string) $tableName), static::LIST_OF_SQLITE_TABLES_TO_SKIP)
+                        || str_contains(strtolower((string) $tableName), 'sqlite')
                     )
                 ) // sqlite filteration
                 || in_array($tableName, $this->config['tables_to_skip']) // user specified filteration
