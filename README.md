@@ -169,3 +169,10 @@ Because of the way the test-suite is designed, in-memory sqlite does not work.
 The sqlite db must be stored in a file. This is already setup in the default pdo config.
 
 The package should work with MS Sqlserver, but the tests will only run with sqlite, mysql & postgres databases.
+
+### Branching
+
+These are the branches in this repository:
+
+- **main:** contains code for the latest major version of this package
+- **1.x:** contains code for the **1.x** version of this package

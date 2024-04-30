@@ -37,7 +37,7 @@ class OtherUtilsTest extends \PHPUnit\Framework\TestCase {
         $throwableAssertingLooper = function (\Throwable $e, string $eol, $output): void {
             
             $previous_throwable = $e; 
-            $eol = PHP_EOL;
+            $eol = ($eol === '') ? PHP_EOL : $eol;
 
             do {
                 self::assertStringContainsString("Exception / Error Code: {$previous_throwable->getCode()}", $output);
