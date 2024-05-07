@@ -39,8 +39,14 @@ class SchemaUtils {
         if(strtolower(static::getPdoDriverName($pdo)) ===  'pgsql') {
             
             // Calculate schema name for postgresql
+            /**
+             * @psalm-suppress MixedAssignment
+             */
             $schemaName = static::dbFetchValue($pdo, 'SELECT CURRENT_SCHEMA');
             
+            /**
+             * @psalm-suppress MixedArgument
+             */
             return $schema->fetchTableList($schemaName);
         }
         
@@ -48,7 +54,7 @@ class SchemaUtils {
     }
     
     /**
-     * @return  mixed[]|\Rotexsoft\SqlSchema\Column[]
+     * @return  \Rotexsoft\SqlSchema\Column[]
      */
     public static function fetchTableColsFromDB(string $table_name, \PDO $pdo): array {
         
@@ -64,8 +70,13 @@ class SchemaUtils {
         return array_key_exists($column_name, $schema_definitions);
     }
     
+    /**
+     * @psalm-suppress MixedInferredReturnType
+     */
     public static function getPdoDriverName(\PDO $pdo): string {
-        
+        /**
+         * @psalm-suppress MixedReturnStatement
+         */
         return $pdo->getAttribute(\PDO::ATTR_DRIVER_NAME);
     }
     
@@ -88,7 +99,10 @@ class SchemaUtils {
             try {
                 
                 if( $value !== 'PERSISTENT' ) {
-                    
+                    /**
+                     * @psalm-suppress MixedArgument
+                     * @psalm-suppress MixedOperand
+                     */
                     $result .= "`{$key}`: " . @$pdo->getAttribute(constant(\PDO::class .'::ATTR_' . $value));
                 }
                 
@@ -99,7 +113,9 @@ class SchemaUtils {
             }
             
             if( $value === 'PERSISTENT' ) {
-
+                /**
+                 * @psalm-suppress MixedArgument
+                 */
                 $result .= "`{$key}`: " . var_export(@$pdo->getAttribute(constant(\PDO::class .'::ATTR_' . $value)), true);
 
             }
@@ -109,7 +125,10 @@ class SchemaUtils {
 
         return $result;
     }
-    
+
+    /**
+     * @psalm-suppress MoreSpecificReturnType
+     */
     protected static function getSchemaQueryingObject(\PDO $pdo): \Rotexsoft\SqlSchema\AbstractSchema {
         
         // a column definition factory 
@@ -119,6 +138,9 @@ class SchemaUtils {
         $schemaClassName = '\\Rotexsoft\\SqlSchema\\' . ucfirst($pdoDriverName) . 'Schema';
 
         // the schema discovery object
+        /**
+         * @psalm-suppress LessSpecificReturnStatement
+         */
         return new $schemaClassName($pdo, $columnFactory);
     }
     

@@ -7,6 +7,7 @@ namespace LeanOrmCli;
  * OrmClassesGenerator is the main class that generates collection, model & record classes for any application using LeanOrm
  *
  * @author rotimi
+ * @psalm-suppress UnusedClass
  */
 class OrmClassesGenerator {
 
@@ -68,6 +69,10 @@ class OrmClassesGenerator {
         $ds = DIRECTORY_SEPARATOR;
         $this->defaultTemplatesDirectory = realpath(__DIR__ . "{$ds}..{$ds}templates{$ds}");
 
+        /**
+         * @psalm-suppress MixedAssignment
+         * @psalm-suppress UnresolvableInclude
+         */
         $this->defaultConfig = require __DIR__ . "{$ds}..{$ds}sample-config.php";
 
         if(!array_key_exists('pdo', $this->config)) {
@@ -79,15 +84,28 @@ class OrmClassesGenerator {
             throw new \Exception('`pdo` entry in config is not an array & is also not a PDO instance!');
         }
 
+        /**
+         * @psalm-suppress MixedArgument
+         */
         $this->pdo = ($this->config['pdo'] instanceof \PDO)
                         ? $this->config['pdo']
                         : new \PDO(...$this->config['pdo']);
 
-        // fill config with defaults
+        /**
+         * Fill config with defaults
+         * 
+         * @psalm-suppress MixedAssignment
+         */
         foreach ($this->defaultConfig as $key=>$val) {
 
+            /**
+             * @psalm-suppress MixedArgument
+             */
             if(!array_key_exists($key, $this->config)) {
 
+                /**
+                 * @psalm-suppress MixedArrayOffset
+                 */
                 $this->config[$key] = $val;
             }
         }
@@ -116,11 +134,19 @@ class OrmClassesGenerator {
         if(
             OtherUtils::isNonEmptyString($this->config['custom_templates_directory'])
         ) {
+            /**
+             * @psalm-suppress MixedArgument
+             * @psalm-suppress PossiblyInvalidCast
+             * @psalm-suppress PossiblyInvalidArgument
+             */
             if(!FileIoUtils::isDir($this->config['custom_templates_directory'])) {
 
                 throw new \Exception('`custom_templates_directory` entry in config is not a valid directory!');
             } 
 
+            /**
+             * @psalm-suppress MixedAssignment
+             */
             $this->customTemplatesDirectory = $this->config['custom_templates_directory'];
             
         } elseif (
@@ -321,15 +347,35 @@ class OrmClassesGenerator {
 
             echo "\tGenerating class files for table `{$tableName}` ....". PHP_EOL;
 
+            /**
+             * @psalm-suppress MixedAssignment
+             * @psalm-suppress MixedFunctionCall
+             */
             $collectionOrModelNamePrefix = 
                 $this->config['table_name_to_collection_and_model_class_prefix_transformer']($tableName);
 
+            /**
+             * @psalm-suppress MixedAssignment
+             * @psalm-suppress MixedFunctionCall
+             */
             $recordNamePrefix =
                 $this->config['table_name_to_record_class_prefix_transformer']($tableName);
 
+            /**
+             * @psalm-suppress MixedOperand
+             */
             $collectionClassName = $collectionOrModelNamePrefix. 'Collection.php';
+            /**
+             * @psalm-suppress MixedOperand
+             */
             $modelClassName = $collectionOrModelNamePrefix. 'Model.php';
+            /**
+             * @psalm-suppress MixedOperand
+             */
             $fieldsFileName = $collectionOrModelNamePrefix. 'FieldsMetadata.php';
+            /**
+             * @psalm-suppress MixedOperand
+             */
             $recordClassName = $recordNamePrefix. 'Record.php';
 
             echo "\t\tCollection class file name: `{$collectionClassName}`". PHP_EOL;
@@ -337,6 +383,9 @@ class OrmClassesGenerator {
             echo "\t\tFields Metadata file name: `{$fieldsFileName}`". PHP_EOL;
             echo "\t\tRecord class file name: `{$recordClassName}`". PHP_EOL;
 
+            /**
+             * @psalm-suppress MixedArgument
+             */
             $destinationDirectory = 
                 FileIoUtils::concatDirAndFileName($this->destinationDirectory, $collectionOrModelNamePrefix);
 
@@ -344,6 +393,9 @@ class OrmClassesGenerator {
 
             $this->filesToWrite[$destinationDirectory] = [];
 
+            /**
+             * @psalm-suppress MixedArgument
+             */
             $this->filesToWrite[$destinationDirectory][$collectionClassName]
                 = $this->generateCollectionClassFile($tableName, $collectionOrModelNamePrefix, $recordNamePrefix);
 
@@ -381,6 +433,9 @@ class OrmClassesGenerator {
         return strtr($this->loadedCollectionTemplateFile, $translations);
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedParam
+     */
     protected function generateFieldsMetadataFile(string $tableName, string $collectionOrModelNamePrefix, string $recordNamePrefix): string {
 
         $colDefs = SchemaUtils::fetchTableColsFromDB($tableName, $this->pdo);
@@ -406,6 +461,9 @@ class OrmClassesGenerator {
         return strtr($this->loadedFieldsMetadataTemplateFile, $translations);
     }
 
+    /**
+     * @psalm-suppress MixedArgument
+     */
     protected function generateModelClassFile(string $tableName, string $collectionOrModelNamePrefix, string $recordNamePrefix): string {
 
         $colDefs = SchemaUtils::fetchTableColsFromDB($tableName, $this->pdo);
@@ -466,6 +524,9 @@ class OrmClassesGenerator {
         return strtr($this->loadedRecordTemplateFile, $translations);
     }
 
+    /**
+     * @psalm-suppress RedundantCastGivenDocblockType
+     */
     protected function generateColNamesAsPhpDocClassProperties(string $tableName): string {
 
         $colDefs = SchemaUtils::fetchTableColsFromDB($tableName, $this->pdo);
@@ -483,6 +544,7 @@ class OrmClassesGenerator {
             }
 
             $props .= " * @property mixed \${$col->name} {$coltype}";
+            
             if ($col->size !== null) {
                 $props .= "({$col->size}";
 
@@ -512,12 +574,25 @@ class OrmClassesGenerator {
             
             echo "Creating generated collection, model & record class files ....". PHP_EOL;
 
+            /**
+             * @psalm-suppress MixedAssignment
+             */
             foreach ($this->filesToWrite as $modelDirectory => $modelFilesInfo) {
 
+                /**
+                 * @psalm-suppress MixedArgumentTypeCoercion
+                 */
                 $this->mkdir($modelDirectory);
 
+                /**
+                 * @psalm-suppress MixedAssignment
+                 */
                 foreach ($modelFilesInfo as $fileName => $fileContents) {
 
+                    /**
+                     * @psalm-suppress MixedArgument
+                     * @psalm-suppress MixedArgumentTypeCoercion
+                     */
                     $destinationFile = FileIoUtils::concatDirAndFileName($modelDirectory, $fileName);
 
                     if(FileIoUtils::isFile($destinationFile) && !str_contains($destinationFile, 'FieldsMetadata')) {
@@ -529,6 +604,9 @@ class OrmClassesGenerator {
                     echo ((FileIoUtils::isFile($destinationFile))? "Updating " : "Creating " )
                          . "`{$destinationFile}`!" . PHP_EOL;
 
+                    /**
+                     * @psalm-suppress MixedArgument
+                     */
                     FileIoUtils::put($destinationFile, $fileContents);
                 }
 
@@ -582,8 +660,14 @@ class OrmClassesGenerator {
 
         sort($tableNames);
 
+        /**
+         * @psalm-suppress MixedAssignment
+         */
         foreach($tableNames as $tableName) {
 
+            /**
+             * @psalm-suppress MixedArgument
+             */
             if(
                 (
                     strtolower(SchemaUtils::getPdoDriverName($this->pdo)) === 'sqlite'
@@ -600,6 +684,9 @@ class OrmClassesGenerator {
             }
 
             echo "Adding table `{$tableName}`" . PHP_EOL;
+            /**
+             * @psalm-suppress MixedPropertyTypeCoercion
+             */
             $this->tableAndViewNames[] = $tableName;
 
         } // foreach($tableNames as $tableName)

@@ -20,9 +20,12 @@ class FileIoUtils {
 
         $error = error_get_last();
         
-        throw new \Exception($error['message']);
+        throw new \Exception(($error === null) ? "ERROR: Could not get the contents of the file `{$file}`" : $error['message']);
     }
 
+    /**
+     * @psalm-suppress PossiblyUnusedReturnValue
+     */
     public static function put(string $file, string $data): int {
         
         $level = error_reporting(0);
@@ -36,7 +39,7 @@ class FileIoUtils {
 
         $error = error_get_last();
         
-        throw new \Exception($error['message']);
+        throw new \Exception(($error === null) ? "ERROR: Could not write data `{$data}` to the file `{$file}`" : $error['message']);
     }
 
     public static function isFile(string $file): bool {
@@ -59,7 +62,7 @@ class FileIoUtils {
 
         $error = error_get_last();
         
-        throw new \Exception($error['message']);
+        throw new \Exception(($error === null) ? "ERROR: Could not create the directory / folder: `{$dir}`" : $error['message']);
     }
     
     public static function concatDirAndFileName(string $dir, string $file): string {
