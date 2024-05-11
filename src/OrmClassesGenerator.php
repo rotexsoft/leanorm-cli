@@ -479,7 +479,7 @@ class OrmClassesGenerator {
             $coltype = $col->type;
 
             $unsigned = '';
-            if (substr(strtoupper($coltype), -9) == ' UNSIGNED') {
+            if (substr(strtoupper($coltype), -9) === ' UNSIGNED') {
 
                 $unsigned = substr($coltype, -9);
                 $coltype = substr($coltype, 0, -9);
