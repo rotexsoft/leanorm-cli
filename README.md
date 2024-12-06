@@ -175,4 +175,5 @@ The package should work with MS Sqlserver, but the tests will only run with sqli
 These are the branches in this repository:
 
 - **main:** contains code for the latest major version of this package
+- **2.x:** contains code for the **2.x** version of this package
 - **1.x:** contains code for the **1.x** version of this package

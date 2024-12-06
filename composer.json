@@ -17,7 +17,7 @@
         "php": ">=8.1.0",
         "atlas/info": "^1.2.0",
         "rotexsoft/sqlschema": "^3.1.1",
-        "icanboogie/inflector": "^v2.2.0",
+        "icanboogie/inflector": "^v3.0.0",
         "symfony/polyfill-php82": "^1.26",
         "symfony/polyfill-php83": "^1.29"
     },
@@ -28,10 +28,12 @@
         "rector/rector": "^1.0.0"
     },
     "autoload": {
-        "classmap": ["src/"]
+        "classmap": ["src/"],
+        "files": ["vendor/icanboogie/inflector/lib/helpers.php"]
     },
     "autoload-dev": {
-        "classmap": ["src/", "tests/"]
+        "classmap": ["src/", "tests/"],
+        "files": ["vendor/icanboogie/inflector/lib/helpers.php"]
     },
     "scripts": {
         "test": [
