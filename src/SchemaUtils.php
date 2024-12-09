@@ -39,14 +39,8 @@ class SchemaUtils {
         if(strtolower(static::getPdoDriverName($pdo)) ===  'pgsql') {
             
             // Calculate schema name for postgresql
-            /**
-             * @psalm-suppress MixedAssignment
-             */
-            $schemaName = static::dbFetchValue($pdo, 'SELECT CURRENT_SCHEMA');
-            
-            /**
-             * @psalm-suppress MixedArgument
-             */
+            $schemaName = (string)static::dbFetchValue($pdo, 'SELECT CURRENT_SCHEMA');
+
             return $schema->fetchTableList($schemaName);
         }
         
@@ -152,10 +146,7 @@ class SchemaUtils {
         return $statement->fetchAll(\PDO::FETCH_COLUMN, 0);
     }
     
-    /**
-     * @return mixed
-     */
-    protected static function dbFetchValue(\PDO $pdo, string $query) {
+    protected static function dbFetchValue(\PDO $pdo, string $query): mixed {
         
         $statement = $pdo->prepare($query);
         $statement->execute();

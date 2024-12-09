@@ -42,7 +42,8 @@
         ],
         "rector-clear": "vendor/bin/rector --clear-cache",
         "rector": "vendor/bin/rector process src --dry-run -vvv",
-        "psalm": "vendor/bin/psalm --threads=1",
+        "psalm-clear-cache": "vendor/bin/psalm --clear-global-cache && vendor/bin/psalm --clear-cache",
+        "psalm": "composer psalm-clear-cache && vendor/bin/psalm --threads=1",
         "qa": "composer test && composer rector && composer psalm",
         "gen-test-pdo-config": "@php -r \"file_exists('./tests/pdo.php') || copy('./pdo-dist.php', './tests/pdo.php');\""
     },
