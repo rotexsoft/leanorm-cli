@@ -3,10 +3,16 @@
 error_reporting(E_ALL);
 
 $autoload = false;
+$inflectorHelper = false;
 $files = [
     __DIR__ . '/../../../autoload.php',
     __DIR__ . '/../../vendor/autoload.php',
     __DIR__ . '/../vendor/autoload.php'
+];
+$inflectorHelpers = [
+    __DIR__ . '/../../../icanboogie/inflector/lib/helpers.php',
+    __DIR__ . '/../../vendor/icanboogie/inflector/lib/helpers.php',
+    __DIR__ . '/../vendor/icanboogie/inflector/lib/helpers.php'
 ];
 
 foreach ($files as $file) {
@@ -16,12 +22,25 @@ foreach ($files as $file) {
     }
 }
 
+foreach ($inflectorHelpers as $file) {
+    if (file_exists($file)) {
+        $inflectorHelper = $file;
+        break;
+    }
+}
+
 if (! $autoload) {
     echo "Please install and update Composer before continuing." . PHP_EOL;
     exit(1);
 }
 
-require $autoload;
+if (! $inflectorHelper) {
+    echo "Error: Could not load inflector helper." . PHP_EOL;
+    exit(1);
+}
+
+require_once $autoload;
+require_once $inflectorHelper;
 
 if (! isset($_SERVER['argv'][1])) {
     echo "Please specify the path to a config file." . PHP_EOL;

@@ -79,8 +79,7 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
             'table_name_to_record_class_prefix_transformer' =>                  // A callback that accepts a db table name, modifies it & returns the modified value that will be used to substitute {{{RECORD_CLASS_NAME_PREFIX}}} in template files
                 function(string $tableName): string {
 
-                    $inflector = \ICanBoogie\Inflector::get('en');
-                    $txtSeparatedWithSpaces = $inflector->titleize($tableName);
+                    $txtSeparatedWithSpaces = \ICanBoogie\StaticInflector::titleize($tableName, 'en');
 
                     if(str_contains($txtSeparatedWithSpaces, ' ')) {
 
@@ -91,13 +90,13 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
 
                             $singularizedWordsCamelCased .= 
                                 strlen($word) > 1
-                                    ? $inflector->singularize($word)
+                                    ? \ICanBoogie\StaticInflector::singularize($word, 'en')
                                     : $word;
                         }
 
                     } else {
 
-                        $singularizedWordsCamelCased = $inflector->singularize($txtSeparatedWithSpaces);
+                        $singularizedWordsCamelCased = \ICanBoogie\StaticInflector::singularize($txtSeparatedWithSpaces, 'en');
                     }
 
                     return $singularizedWordsCamelCased;
@@ -106,8 +105,7 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
             'table_name_to_collection_and_model_class_prefix_transformer' =>    // A callback that accepts a db table name, modifies it & returns the modified value that will be used to substitute {{{MODEL_OR_COLLECTION_CLASS_NAME_PREFIX}}} in template files
                 function(string $tableName): string {
 
-                    $inflector = \ICanBoogie\Inflector::get('en');
-                    $txtSeparatedWithSpaces = $inflector->titleize($tableName);
+                    $txtSeparatedWithSpaces = \ICanBoogie\StaticInflector::titleize($tableName, 'en');
 
                     if(str_contains($txtSeparatedWithSpaces, ' ')) {
 
@@ -118,13 +116,13 @@ class EndUserTest extends \PHPUnit\Framework\TestCase {
 
                             $pluralizedWordsCamelCased .= 
                                 strlen($word) > 1
-                                    ? $inflector->pluralize($word)
+                                    ? \ICanBoogie\StaticInflector::pluralize($word, 'en')
                                     : $word;
                         }
 
                     } else {
 
-                        $pluralizedWordsCamelCased = $inflector->pluralize($txtSeparatedWithSpaces);
+                        $pluralizedWordsCamelCased = \ICanBoogie\StaticInflector::pluralize($txtSeparatedWithSpaces, 'en');
                     }
 
                     return $pluralizedWordsCamelCased;

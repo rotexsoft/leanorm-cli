@@ -28,12 +28,10 @@
         "rector/rector": "^1.0.0"
     },
     "autoload": {
-        "classmap": ["src/"],
-        "files": ["vendor/icanboogie/inflector/lib/helpers.php"]
+        "classmap": ["src/"]
     },
     "autoload-dev": {
-        "classmap": ["src/", "tests/"],
-        "files": ["vendor/icanboogie/inflector/lib/helpers.php"]
+        "classmap": ["src/", "tests/"]
     },
     "scripts": {
         "test": [
