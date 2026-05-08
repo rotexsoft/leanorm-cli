@@ -16,7 +16,7 @@ jobs:
 
     strategy:
         matrix:
-            php: [8.4, 8.3, 8.2, 8.1]
+            php: [8.5, 8.4, 8.3, 8.2, 8.1]
 # prefer-lowest is causing unit tests to fail when php 7.2 is run against PHPunit 7.x, 
 # PHPUnit 8.x is the latest stable release that supports PHP 7.2 and that runs fine
 #            dependency-version: [prefer-lowest, prefer-stable]
@@ -77,6 +77,6 @@ jobs:
       run: vendor/bin/rector process src --dry-run
       continue-on-error: true
 
-#    - name: Run Psalm
-#      run: vendor/bin/psalm
-#      continue-on-error: true
+    - name: Run Psalm
+      run: vendor/bin/psalm
+      continue-on-error: true
