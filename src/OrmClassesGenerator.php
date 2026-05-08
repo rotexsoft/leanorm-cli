@@ -8,6 +8,7 @@ namespace LeanOrmCli;
  *
  * @author rotimi
  * @psalm-suppress UnusedClass
+ * @psalm-suppress ClassMustBeFinal
  */
 class OrmClassesGenerator {
 
@@ -67,7 +68,8 @@ class OrmClassesGenerator {
     public function __construct(protected array $config) {
 
         $ds = DIRECTORY_SEPARATOR;
-        $this->defaultTemplatesDirectory = realpath(__DIR__ . "{$ds}..{$ds}templates{$ds}");
+        $daRealPath = realpath(__DIR__ . "{$ds}..{$ds}templates{$ds}");
+        $this->defaultTemplatesDirectory = ($daRealPath === false) ? '' : $daRealPath;
 
         /**
          * @psalm-suppress MixedAssignment

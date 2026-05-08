@@ -16,7 +16,7 @@
     "require": {
         "php": ">=8.1.0",
         "atlas/info": "^1.2.0",
-        "rotexsoft/sqlschema": "^3.1.1",
+        "rotexsoft/sqlschema": "^4.0.0",
         "icanboogie/inflector": "^v3.0.0",
         "symfony/polyfill-php82": "^1.26",
         "symfony/polyfill-php83": "^1.29"

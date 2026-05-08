@@ -10,6 +10,7 @@ use Atlas\Pdo\Connection as AtlasPdoConnection;
 /**
  * Description of SchemaUtils
  *
+ * @psalm-suppress ClassMustBeFinal
  * @author rotimi
  */
 class SchemaUtils {
@@ -63,10 +64,7 @@ class SchemaUtils {
         
         return array_key_exists($column_name, $schema_definitions);
     }
-    
-    /**
-     * @psalm-suppress MixedInferredReturnType
-     */
+
     public static function getPdoDriverName(\PDO $pdo): string {
         /**
          * @psalm-suppress MixedReturnStatement

@@ -4,6 +4,7 @@ namespace LeanOrmCli;
 
 /**
  * This code was lifted from https://github.com/atlasphp/Atlas.Cli/blob/2.x/src/Fsio.php
+ * @psalm-suppress ClassMustBeFinal
  */
 class FileIoUtils {
 

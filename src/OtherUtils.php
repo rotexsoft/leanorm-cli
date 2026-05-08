@@ -6,6 +6,7 @@ namespace LeanOrmCli;
 /**
  * Description of OtherUtils
  *
+ * @psalm-suppress ClassMustBeFinal
  * @author rotimi
  */
 class OtherUtils {
