@@ -34,13 +34,12 @@ if (! $autoload) {
     exit(1);
 }
 
-if (! $inflectorHelper) {
-    echo "Error: Could not load inflector helper." . PHP_EOL;
-    exit(1);
-}
-
 require_once $autoload;
-require_once $inflectorHelper;
+
+if ($inflectorHelper) {
+
+    require_once $inflectorHelper;
+}
 
 if (! isset($_SERVER['argv'][1])) {
     echo "Please specify the path to a config file." . PHP_EOL;
