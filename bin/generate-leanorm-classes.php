@@ -81,7 +81,7 @@ try {
     }
     
     $code = $command($tableOrViewNameIfAny);
-    exit($code);
+    exit($code ?? 0);
     
 } catch (\Exception $e) {
 
